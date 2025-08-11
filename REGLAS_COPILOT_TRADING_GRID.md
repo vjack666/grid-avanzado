@@ -119,6 +119,84 @@ python scripts/reparar_imports.py         # Reparar imports si es necesario
 ✅ documentacion/arquitectura/estado_actual_sistema.md  # Si cambió estado
 ```
 
+### 📁 **REGLA #7: ORGANIZACIÓN DE BITÁCORAS Y ESTRUCTURA DE CARPETAS**
+
+#### **🎯 PRINCIPIOS DE ORGANIZACIÓN:**
+```
+📋 ESTRUCTURA MODULAR POR SÓTANOS:
+✅ CADA SÓTANO = CARPETA INDEPENDIENTE
+✅ DOCUMENTACIÓN SEPARADA POR FASE
+✅ ESTRUCTURA ESCALABLE PARA FUTURO
+✅ NO MEZCLAR PROYECTOS COMPLETADOS
+```
+
+#### **📁 ESTRUCTURA ESTÁNDAR DE DOCUMENTACIÓN:**
+```
+documentacion/
+├── 📖 README.md                    # Documentación principal - SIEMPRE EN RAÍZ
+├── 🏗️ arquitectura/               # Documentos técnicos permanentes
+├── 📝 bitacora/                   # Bitácoras de desarrollo por proyecto
+│   ├── sotano_1/                  # SÓTANO 1 - Analytics & Optimization
+│   ├── sotano_2/                  # SÓTANO 2 - Real-Time Optimization  
+│   ├── sotano_3/                  # SÓTANO 3 - ML & AI (futuro)
+│   ├── sotano_N/                  # Proyectos futuros
+│   ├── desarrollo_diario.md       # Bitácora general del día
+│   └── componentes_completados.md # Log de componentes finalizados
+├── ✅ completos/                  # Fases y documentos completados (archivo)
+├── 🔧 desarrollo/                 # Planes e implementaciones activas
+└── 📋 templates/                  # Templates para nuevos documentos
+```
+
+#### **🏗️ PROTOCOLO PARA NUEVOS SÓTANOS:**
+```
+🚀 CREACIÓN DE NUEVO SÓTANO:
+1. ✅ Crear carpeta: documentacion/bitacora/sotano_N/
+2. ✅ Crear archivos base:
+   - 01_RESUMEN_EJECUTIVO.md        # Explicación simple para cualquier persona
+   - 02_ARQUITECTURA_TECNICA.md     # Diseño técnico detallado
+   - 03_PLAN_FASES_DETALLADO.md     # Cronograma y fases específicas
+3. ✅ Actualizar README.md principal con referencia al nuevo sótano
+4. ✅ NO mover/modificar sótanos anteriores (son archivo histórico)
+```
+
+#### **📋 PROTOCOLO PARA ARCHIVOS COMPLETADOS:**
+```
+✅ CUANDO SE COMPLETA UNA FASE:
+1. ✅ Mover documentos completados → documentacion/completos/
+2. ✅ Eliminar originales para evitar duplicación
+3. ✅ Mantener solo documentos activos en desarrollo
+4. ✅ Actualizar bitacora/desarrollo_diario.md con logros
+```
+
+#### **🔄 PROTOCOLO PARA EXPANSIÓN FUTURA:**
+```
+🎯 ESCALABILIDAD GARANTIZADA:
+├── SÓTANO 3: Machine Learning & AI
+│   └── documentacion/bitacora/sotano_3/
+├── SÓTANO 4: Portfolio Management
+│   └── documentacion/bitacora/sotano_4/
+├── SÓTANO 5: Risk Management Avanzado
+│   └── documentacion/bitacora/sotano_5/
+└── SÓTANO N: Proyectos futuros
+    └── documentacion/bitacora/sotano_N/
+
+🚨 REGLA CRÍTICA: NUNCA MODIFICAR SÓTANOS ANTERIORES
+✅ Cada sótano es independiente y versionado
+✅ No contaminar documentación de proyectos completados
+✅ Mantener trazabilidad histórica completa
+```
+
+#### **🎯 NOMENCLATURA ESTÁNDAR:**
+```
+📝 ARCHIVOS POR SÓTANO:
+├── 01_RESUMEN_EJECUTIVO.md         # Explicación para no técnicos
+├── 02_ARQUITECTURA_TECNICA.md      # Diseño y especificaciones
+├── 03_PLAN_FASES_DETALLADO.md      # Cronograma con subfases
+├── 04_CONFIGURACION_INICIAL.md     # Setup e instalación (opcional)
+├── 05_GUIA_OPERACION.md           # Manual de uso (opcional)
+└── NN_DOCUMENTO_ESPECIFICO.md     # Documentos específicos del sótano
+```
+
 #### **📄 TEMPLATE DE ACTUALIZACIÓN:**
 ```markdown
 ## [FECHA] - [TIPO DE CAMBIO]
@@ -139,6 +217,151 @@ python scripts/reparar_imports.py         # Reparar imports si es necesario
 - [ ] Imports funcionan: Sin errores de módulos
 
 ### 🎯 Próximo:
+---
+
+## 🏗️ **PROTOCOLO ESPECÍFICO: ORGANIZACIÓN Y ESTRUCTURA DE CARPETAS**
+
+### **📋 PROTOCOLO #1: CREACIÓN DE NUEVOS SÓTANOS**
+
+#### **🎯 PROCESO OBLIGATORIO PARA NUEVOS PROYECTOS:**
+```bash
+# 1. CREAR ESTRUCTURA BASE
+mkdir "documentacion\bitacora\sotano_N"
+
+# 2. CREAR ARCHIVOS ESTÁNDAR (obligatorios)
+echo. > "documentacion\bitacora\sotano_N\01_RESUMEN_EJECUTIVO.md"
+echo. > "documentacion\bitacora\sotano_N\02_ARQUITECTURA_TECNICA.md" 
+echo. > "documentacion\bitacora\sotano_N\03_PLAN_FASES_DETALLADO.md"
+
+# 3. ACTUALIZAR REFERENCIAS
+# - Agregar link en documentacion/README.md
+# - Mencionar en REGLAS_COPILOT_TRADING_GRID.md
+# - Actualizar estructura en este protocolo
+```
+
+#### **🔧 TEMPLATE PARA NUEVOS SÓTANOS:**
+```markdown
+# SÓTANO N - [NOMBRE DEL PROYECTO]
+
+## ESTRUCTURA OBLIGATORIA:
+documentacion/bitacora/sotano_N/
+├── 01_RESUMEN_EJECUTIVO.md         # Para cualquier persona (no técnico)
+├── 02_ARQUITECTURA_TECNICA.md      # Diseño técnico detallado  
+├── 03_PLAN_FASES_DETALLADO.md      # Cronograma con subfases
+├── 04_CONFIGURACION_INICIAL.md     # Setup e instalación (si aplica)
+├── 05_GUIA_OPERACION.md           # Manual de uso (si aplica)
+└── [documentos específicos]        # Según necesidades del proyecto
+```
+
+### **📋 PROTOCOLO #2: GESTIÓN DE DOCUMENTOS COMPLETADOS**
+
+#### **🎯 PROCESO DE ARCHIVO:**
+```bash
+# 1. IDENTIFICAR DOCUMENTOS COMPLETADOS
+# - Buscar archivos con sufijo "_COMPLETED.md"
+# - Buscar archivos de fases finalizadas
+
+# 2. MOVER A CARPETA DE ARCHIVO
+Move-Item -Path "documentacion\FASE_*_COMPLETED.md" -Destination "documentacion\completos\"
+
+# 3. ELIMINAR ORIGINALES (evitar duplicación)
+Remove-Item -Path "documentacion\FASE_*_COMPLETED.md" -Force
+
+# 4. ACTUALIZAR ÍNDICES
+# - Actualizar documentacion/README.md
+# - Actualizar bitacora/componentes_completados.md
+```
+
+### **📋 PROTOCOLO #3: EXPANSIÓN FUTURA PLANIFICADA**
+
+#### **🚀 ROADMAP DE SÓTANOS PROYECTADOS:**
+```
+ESTRUCTURA FUTURA GARANTIZADA:
+
+documentacion/bitacora/
+├── sotano_1/                       # ✅ COMPLETADO - Analytics & Optimization
+├── sotano_2/                       # 🚧 ACTUAL - Real-Time Optimization
+├── sotano_3/                       # 📋 PLANIFICADO - Machine Learning & AI
+│   ├── 01_RESUMEN_EJECUTIVO.md     # Predictive models, sentiment analysis
+│   ├── 02_ARQUITECTURA_TECNICA.md  # ML pipeline, data processing
+│   └── 03_PLAN_FASES_DETALLADO.md  # Training, validation, deployment
+├── sotano_4/                       # 📋 PLANIFICADO - Portfolio Management
+│   ├── 01_RESUMEN_EJECUTIVO.md     # Multi-asset, diversification
+│   ├── 02_ARQUITECTURA_TECNICA.md  # Portfolio engine, correlation
+│   └── 03_PLAN_FASES_DETALLADO.md  # Asset allocation, rebalancing
+├── sotano_5/                       # 📋 PLANIFICADO - Risk Management Avanzado
+│   ├── 01_RESUMEN_EJECUTIVO.md     # Advanced risk models, stress testing
+│   ├── 02_ARQUITECTURA_TECNICA.md  # VaR, Monte Carlo, scenario analysis
+│   └── 03_PLAN_FASES_DETALLADO.md  # Implementation, validation
+└── sotano_N/                       # 🔮 FUTURO - Proyectos no definidos
+    └── [estructura estándar]
+```
+
+#### **🔒 REGLAS INVIOLABLES DE EXPANSIÓN:**
+```
+🚨 NUNCA:
+❌ Modificar sótanos completados
+❌ Mover archivos entre sótanos  
+❌ Cambiar estructura de sótanos anteriores
+❌ Mezclar documentación de diferentes proyectos
+
+✅ SIEMPRE:
+✅ Crear nueva carpeta sotano_N para nuevo proyecto
+✅ Usar nomenclatura estándar 01_, 02_, 03_
+✅ Mantener independencia entre sótanos
+✅ Archivar documentos completados en completos/
+```
+
+### **📋 PROTOCOLO #4: MANTENIMIENTO DE ESTRUCTURA**
+
+#### **🔄 REVISIÓN PERIÓDICA OBLIGATORIA:**
+```bash
+# COMANDO DE VERIFICACIÓN ESTRUCTURA:
+tree /f /a documentacion
+
+# RESULTADO ESPERADO:
+documentacion/
+├── README.md                       # ✅ Documentación principal
+├── arquitectura/                   # ✅ Docs técnicos permanentes
+├── bitacora/                      # ✅ Bitácoras por proyecto
+│   ├── sotano_1/                  # ✅ Proyecto completado
+│   ├── sotano_2/                  # ✅ Proyecto actual
+│   ├── desarrollo_diario.md       # ✅ Bitácora general
+│   └── componentes_completados.md # ✅ Log de completados
+├── completos/                     # ✅ Archivo de documentos
+├── desarrollo/                    # ✅ Planes activos
+└── templates/                     # ✅ Templates estándar
+```
+
+#### **🧹 COMANDO DE LIMPIEZA AUTOMÁTICA:**
+```bash
+# SCRIPT DE ORGANIZACIÓN (ejecutar mensualmente):
+# 1. Verificar duplicados
+# 2. Mover completados a completos/
+# 3. Limpiar archivos temporales
+# 4. Validar estructura estándar
+```
+
+---
+
+## 🎯 **APLICACIÓN INMEDIATA DE ESTOS PROTOCOLOS**
+
+### **✅ ESTRUCTURA ACTUAL VALIDADA:**
+- 🏗️ **SÓTANO 1**: Completado y archivado ✅
+- 🚧 **SÓTANO 2**: En desarrollo con estructura estándar ✅  
+- 📁 **Organización**: Carpetas separadas y limpias ✅
+- 📋 **Documentación**: Templates y protocolos definidos ✅
+
+### **🚀 PREPARADO PARA FUTURO:**
+- 🔮 **Escalabilidad**: Hasta SÓTANO N sin límites
+- 🛡️ **Integridad**: Estructura protegida contra modificaciones
+- 📚 **Consistencia**: Templates y nomenclatura estándar
+- 🎯 **Mantenimiento**: Protocolos de limpieza y organización
+
+---
+
+**¡Protocolos de organización implementados y listos para uso inmediato! 🎉**
+
 - [Qué sigue en la próxima sesión]
 ```
 
