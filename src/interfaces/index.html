@@ -1,0 +1,114 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io@4.7.5/client-dist/socket.io.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #1a202c; color: #e2e8f0; font-family: Arial, sans-serif; }
+        .panel { background-color: #2d3748; border-radius: 8px; padding: 16px; }
+        .error { color: #f56565; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container mx-auto">
+        <h1 class="text-2xl font-bold text-center text-cyan-400 mb-4">📈 Trading Dashboard</h1>
+        <div id="error-message" class="hidden text-center error mb-4"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="panel">
+                <h2 class="text-lg font-semibold text-blue-400 mb-2">💰 Resumen Cuenta</h2>
+                <p id="balance">Balance: $0.00</p>
+                <p id="profit_neto">Profit Neto: $0.00</p>
+                <p id="lotes_totales">Lotes Totales: 0.00</p>
+                <p id="comision_por_lote">Comisión/Lote: $0.00</p>
+            </div>
+            <div class="panel">
+                <h2 class="text-lg font-semibold text-blue-400 mb-2">📊 Estocástico</h2>
+                <pre id="estocastico" class="text-sm"></pre>
+            </div>
+            <div class="panel">
+                <h2 class="text-lg font-semibold text-yellow-400 mb-2">🖥️ Sistema</h2>
+                <p id="mt5_status">MT5: Desconectado</p>
+                <p id="session_status">Sesión: Inactiva</p>
+                <p id="modalidad">Modalidad: -</p>
+                <p id="modo_operacion">Operación: -</p>
+                <p id="ciclo">Ciclo: 0</p>
+                <p id="hora">Hora: -</p>
+            </div>
+            <div class="panel">
+                <h2 class="text-lg font-semibold text-purple-400 mb-2">🟣 Grid Bollinger</h2>
+                <pre id="grid" class="text-sm">Sin datos Grid</pre>
+            </div>
+        </div>
+    </div>
+    <script>
+        const socket = io();
+        socket.on('dashboard_update', (data) => {
+            document.getElementById('error-message').classList.add('hidden');
+            if (data.error) {
+                document.getElementById('error-message').textContent = data.error;
+                document.getElementById('error-message').classList.remove('hidden');
+                return;
+            }
+            if (data.message) {
+                document.getElementById('error-message').textContent = data.message;
+                document.getElementById('error-message').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('balance').textContent = `Balance: $${data.balance}`;
+            document.getElementById('profit_neto').textContent = `Profit Neto: $${data.profit_neto}`;
+            document.getElementById('lotes_totales').textContent = `Lotes Totales: ${data.lotes_totales}`;
+            document.getElementById('comision_por_lote').textContent = `Comisión/Lote: $${data.comision_por_lote}`;
+            document.getElementById('mt5_status').textContent = `MT5: ${data.mt5_status}`;
+            document.getElementById('session_status').textContent = `Sesión: ${data.session_status}`;
+            document.getElementById('modalidad').textContent = `Modalidad: ${data.modalidad}`;
+            document.getElementById('modo_operacion').textContent = `Operación: ${data.modo_operacion}`;
+            document.getElementById('ciclo').textContent = `Ciclo: ${data.ciclo}`;
+            document.getElementById('hora').textContent = `Hora: ${data.hora}`;
+            document.getElementById('estocastico').textContent = data.estocastico;
+            document.getElementById('grid').textContent = data.grid;
+        });
+    </script>
+</body>
+</html>
