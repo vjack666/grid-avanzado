@@ -34,7 +34,7 @@ Un sistema de trading completamente automatizado que utiliza la estrategia Grid 
 ### **Instalación:**
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/grid-avanzado.git
+git clone https://github.com/vjack666/grid-avanzado.git
 cd grid-avanzado
 
 # Instalar dependencias
@@ -175,8 +175,8 @@ grid-avanzado/
 
 - 📧 **Email**: [tu-email@ejemplo.com]
 - 💬 **Discord**: [Link al servidor]
-- 🐛 **Issues**: [GitHub Issues](https://github.com/tu-usuario/grid-avanzado/issues)
-- 📖 **Wiki**: [Documentación completa](https://github.com/tu-usuario/grid-avanzado/wiki)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/vjack666/grid-avanzado/issues)
+- 📖 **Wiki**: [Documentación completa](https://github.com/vjack666/grid-avanzado/wiki)
 
 ## 📄 **LICENCIA**
 
