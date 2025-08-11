@@ -2,7 +2,7 @@
   "optimization_results": [
     {
       "parameters": {
-        "grid_spacing": 0.0019349999999999999,
+        "grid_spacing": 0.0023880000000000004,
         "grid_levels": 10,
         "volume_per_level": 0.12,
         "stop_loss_pips": 25,
@@ -12,8 +12,8 @@
       "confidence_score": 0.95,
       "expected_improvement": 6.0,
       "optimization_type": "GRID_PARAMETERS",
-      "timestamp": "2025-08-10T15:47:54.794171",
-      "validation_score": 88.7
+      "timestamp": "2025-08-11T12:16:12.893725",
+      "validation_score": 95.0
     },
     {
       "parameters": {
@@ -25,9 +25,9 @@
       "confidence_score": 0.75,
       "expected_improvement": 6.0,
       "optimization_type": "PERFORMANCE_TUNING",
-      "timestamp": "2025-08-10T15:47:54.796845",
+      "timestamp": "2025-08-11T12:16:12.897208",
       "validation_score": null
     }
   ],
-  "saved_at": "2025-08-10T15:47:54.811000"
+  "saved_at": "2025-08-11T12:16:12.909272"
 }

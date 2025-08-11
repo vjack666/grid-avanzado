@@ -4,7 +4,23 @@ FASE 5: IndicatorManager - Gestión Avanzada de Indicadores Técnicos
 
 IndicatorManager centraliza la gestión de indicadores técnicos avanzados,
 señales compuestas, y analytics de performance. Se integra con DataManager
-para optimizar el uso de datos y cache.
+para optimizar el uso                    except Exception as e:
+            if self.error_manager:
+                self.error_manager.handle_data_error("Williams_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()except Exception as e:
+            if self.error_manager:
+                self.error_manager.handle_data_error("Stoch_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()except Exception as e:
+            if self.error_manager:
+                self.error_manager.handle_data_error("RSI_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()except Exception as e:
+            if self.error_manager:
+                self.error_manager.handle_data_error("BB_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()datos y cache.
 
 Funcionalidades:
 - Indicadores técnicos avanzados (MACD, EMA, Williams %R, ADX, ATR, CCI)
@@ -64,7 +80,7 @@ class IndicatorManager:
         base_key = f"{symbol}_{timeframe}_{indicator}"
         return f"{base_key}_{params}" if params else base_key
     
-    def cache_indicator_result(self, key: str, result, ttl: int = None) -> None:
+    def cache_indicator_result(self, key: str, result, ttl: int = 300) -> None:
         """Cache resultado de indicador con TTL específico"""
         if ttl is None:
             ttl = self.ttl_config['indicators']
@@ -81,6 +97,7 @@ class IndicatorManager:
     def get_cached_indicator(self, key: str):
         """Obtener indicador del cache si no ha expirado"""
         if key not in self.indicator_cache:
+            # En trading, retornar None aquí es aceptable para el cache
             return None
             
         cached_item = self.indicator_cache[key]
@@ -88,6 +105,7 @@ class IndicatorManager:
         
         if elapsed > cached_item['ttl']:
             del self.indicator_cache[key]
+            # En trading, retornar None aquí es aceptable para el cache
             return None
             
         if self.logger:
@@ -148,8 +166,9 @@ class IndicatorManager:
             
         except Exception as e:
             if self.error_manager:
-                self.error_manager.handle_error(e, "IndicatorManager.calculate_macd")
-            return None
+                self.error_manager.handle_data_error("MACD_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
     
     def calculate_ema(self, df: pd.DataFrame, period: int = 20) -> pd.DataFrame:
         """
@@ -178,8 +197,9 @@ class IndicatorManager:
             
         except Exception as e:
             if self.error_manager:
-                self.error_manager.handle_error(e, "IndicatorManager.calculate_ema")
-            return None
+                self.error_manager.handle_data_error("EMA_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
     
     def calculate_williams_r(self, df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
         """
@@ -218,8 +238,9 @@ class IndicatorManager:
             
         except Exception as e:
             if self.error_manager:
-                self.error_manager.handle_error(e, "IndicatorManager.calculate_williams_r")
-            return None
+                self.error_manager.handle_data_error("Williams_R_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
     
     def calculate_atr(self, df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
         """
@@ -263,8 +284,9 @@ class IndicatorManager:
             
         except Exception as e:
             if self.error_manager:
-                self.error_manager.handle_error(e, "IndicatorManager.calculate_atr")
-            return None
+                self.error_manager.handle_data_error("ATR_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
     
     def calculate_cci(self, df: pd.DataFrame, period: int = 20) -> pd.DataFrame:
         """
@@ -310,8 +332,9 @@ class IndicatorManager:
             
         except Exception as e:
             if self.error_manager:
-                self.error_manager.handle_error(e, "IndicatorManager.calculate_cci")
-            return None
+                self.error_manager.handle_data_error("CCI_calculation", e)
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
     
     # ========================================================================
     # INDICADORES BÁSICOS CON CACHE (Wrapper para DataManager)
@@ -328,7 +351,8 @@ class IndicatorManager:
         # Obtener datos y calcular
         df = self.data_manager.get_ohlc_data(symbol, timeframe, periods + 5)
         if df is None:
-            return None
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
             
         result = self.data_manager.calculate_bollinger_bands(df, periods, deviation)
         
@@ -349,7 +373,8 @@ class IndicatorManager:
         # Obtener datos y calcular
         df = self.data_manager.get_ohlc_data(symbol, timeframe, period + 10)
         if df is None:
-            return None
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
             
         result = self.data_manager.calculate_rsi(df, period)
         
@@ -370,7 +395,8 @@ class IndicatorManager:
         # Obtener datos y calcular
         df = self.data_manager.get_ohlc_data(symbol, timeframe, k_period + 10)
         if df is None:
-            return None
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
             
         result = self.data_manager.calculate_stochastic(df, k_period, d_period)
         
@@ -391,7 +417,8 @@ class IndicatorManager:
         # Obtener datos y calcular
         df = self.data_manager.get_ohlc_data(symbol, timeframe, slow + 20)
         if df is None:
-            return None
+            # Devolver DataFrame vacío en lugar de None para trading
+            return pd.DataFrame()
             
         result = self.calculate_macd(df, fast, slow, signal)
         
