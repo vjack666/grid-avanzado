@@ -25,11 +25,11 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 # Imports del sistema SÓTANO 1 (protocolo centralizado)
-from config_manager import ConfigManager
-from logger_manager import LoggerManager
-from error_manager import ErrorManager
-from data_manager import DataManager
-from analytics_manager import AnalyticsManager
+from ..config_manager import ConfigManager
+from ..logger_manager import LoggerManager
+from ..error_manager import ErrorManager
+from ..data_manager import DataManager
+from ..analytics_manager import AnalyticsManager
 
 class MarketRegime(Enum):
     """Regímenes de mercado identificables"""

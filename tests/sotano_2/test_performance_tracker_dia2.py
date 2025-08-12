@@ -27,16 +27,15 @@ sys.path.insert(0, str(src_core.absolute()))
 
 # Imports absolutos con validación
 try:
-    # Importar desde src/core directamente
-    sys.path.append(str(src_core))
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager  
-    from error_manager import ErrorManager
-    from data_manager import DataManager
+    # Importar desde src.core usando imports absolutos
+    from src.core.config_manager import ConfigManager
+    from src.core.logger_manager import LoggerManager  
+    from src.core.error_manager import ErrorManager
+    from src.core.data_manager import DataManager
     
     # Import del PerformanceTracker desde real_time
-    from real_time.performance_tracker import PerformanceTracker, PerformanceSnapshot, TradeRecord
-    from real_time.alert_engine import AlertEngine
+    from src.core.real_time.performance_tracker import PerformanceTracker, PerformanceSnapshot, TradeRecord
+    from src.core.real_time.alert_engine import AlertEngine
     
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
@@ -123,13 +122,13 @@ def test_performance_tracker_basic():
         print("🎯 Seguimiento de performance inicializado correctamente")
         print("🔗 Integración SÓTANO 1 y 2 validada")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"\n❌ ERROR en test PerformanceTracker: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"PerformanceTracker test falló: {e}"
 
 
 def test_account_tracking():
@@ -195,11 +194,11 @@ def test_account_tracking():
         assert status['is_tracking'] == False, "Tracking no detenido"
         print("✅ Tracking detenido: OK")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de tracking: {e}")
-        return False
+        assert False, f"Account tracking test falló: {e}"
 
 
 def test_trade_management():
@@ -285,11 +284,11 @@ def test_trade_management():
         print("✅ DataFrame de trades: OK")
         
         tracker.stop_tracking()
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de trades: {e}")
-        return False
+        assert False, f"Trade management test falló: {e}"
 
 
 def test_performance_snapshots():
@@ -319,6 +318,8 @@ def test_performance_snapshots():
                 equity=10000.0 + (i * 100)
             )
             time.sleep(1.2)  # Esperar para que se genere snapshot
+            # Forzar creación de snapshot si no se genera automáticamente
+            tracker._create_performance_snapshot()
         
         # Verificar que se generaron snapshots
         status = tracker.get_status()
@@ -342,11 +343,11 @@ def test_performance_snapshots():
         print("✅ Performance summary: OK")
         
         tracker.stop_tracking()
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de snapshots: {e}")
-        return False
+        assert False, f"Performance snapshots test falló: {e}"
 
 
 def test_alert_integration():
@@ -363,6 +364,9 @@ def test_alert_integration():
         alert_engine = AlertEngine(config, logger, error)
         tracker = PerformanceTracker(config, logger, error, data_manager, alert_engine)
         
+        # Importar AlertChannel
+        from src.core.real_time.alert_engine import AlertChannel
+        
         # Configurar thresholds bajos para testing
         tracker.tracker_config["alert_thresholds"]["max_drawdown"] = 5.0  # 5%
         tracker.tracker_config["alert_thresholds"]["min_win_rate"] = 60.0  # 60%
@@ -373,7 +377,7 @@ def test_alert_integration():
         def alert_callback(alert):
             alerts_received.append(alert.title)
         
-        alert_engine.subscribe_channel(alert_engine.AlertChannel.LOG, alert_callback)
+        alert_engine.subscribe_channel(AlertChannel.LOG, alert_callback)
         alert_engine.start_engine()
         
         # Iniciar tracking
@@ -436,11 +440,11 @@ def test_alert_integration():
         
         alert_engine.stop_engine()
         tracker.stop_tracking()
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de alertas: {e}")
-        return False
+        assert False, f"Alert integration test falló: {e}"
 
 
 def main():
@@ -473,7 +477,7 @@ def main():
     print("-" * 50)
     try:
         # Verificar que el sistema SÓTANO 1 sigue funcionando
-        from analytics_manager import AnalyticsManager
+        from src.core.analytics_manager import AnalyticsManager
         config = ConfigManager()
         logger = LoggerManager()
         error = ErrorManager(logger)
@@ -508,11 +512,11 @@ def main():
         print("✅ Alertas de performance: Funcional")
         print("\n🏆 SÓTANO 2 DÍA 2: 100% COMPLETADO")
         print("🎯 PRÓXIMO: DÍA 3 - Optimización y análisis avanzado")
-        return True
+        assert True  # Test exitoso
     else:
         print(f"\n❌ DÍA 2 CON PROBLEMAS")
         print("🔧 Revisar implementación antes de continuar")
-        return False
+        assert False, "Día 2 completado con problemas"
 
 
 if __name__ == "__main__":

@@ -177,8 +177,8 @@ class TestAnalyticsManagerFase11(unittest.TestCase):
         self.assertFalse(status["initialized"])
         self.assertFalse(status["active"])
         self.assertTrue(status["performance_tracker"])
-        self.assertEqual(status["version"], "1.1.0")
-        self.assertEqual(status["phase"], "FASE_1.1_ARQUITECTURA_CORE")
+        self.assertEqual(status["version"], "1.3.0")  # Actualizada a versión actual
+        self.assertEqual(status["phase"], "FASE_1.3_MARKET_ANALYTICS")  # Actualizada a fase actual
         
         # Estado después de inicializar
         self.analytics_manager.initialize()

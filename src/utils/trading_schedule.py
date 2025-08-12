@@ -1,6 +1,7 @@
 from datetime import datetime, time
 import json
 import os
+from typing import List
 
 # Configuración centralizada - directa desde los valores definidos
 user_dir = os.path.expanduser("~")
@@ -15,7 +16,7 @@ SESIONES_TRADING = {
     'LONDRES_NY': {'inicio': time(7, 0), 'fin': time(11, 0), 'dias': [0, 1, 2, 3, 4]}
 }
 
-def esta_en_horario_operacion(sesiones_seleccionadas):
+def esta_en_horario_operacion(sesiones_seleccionadas: List[str]) -> bool:
     ahora = datetime.now().replace(tzinfo=None)
     hora_actual = ahora.time()
     dia_actual = ahora.weekday()
@@ -38,10 +39,10 @@ def esta_en_horario_operacion(sesiones_seleccionadas):
 
     return False
 
-def mostrar_horario_operacion(sesiones_seleccionadas):
+def mostrar_horario_operacion(sesiones_seleccionadas: List[str]) -> str:
     return f"Sesiones activas: {', '.join(sesiones_seleccionadas) if sesiones_seleccionadas else 'NINGUNA'}"
 
-def solicitar_horario_operacion():
+def solicitar_horario_operacion() -> List[str]:
     sesiones_previas = []
     if os.path.exists(parametros_path):
         try:

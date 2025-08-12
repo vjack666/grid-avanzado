@@ -27,16 +27,15 @@ sys.path.insert(0, str(src_core.absolute()))
 
 # Imports absolutos con validación
 try:
-    # Importar desde src/core directamente
-    sys.path.append(str(src_core))
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager  
-    from error_manager import ErrorManager
-    from mt5_manager import MT5Manager
-    from data_manager import DataManager
+    # Importar desde src.core usando imports absolutos
+    from src.core.config_manager import ConfigManager
+    from src.core.logger_manager import LoggerManager  
+    from src.core.error_manager import ErrorManager
+    from src.core.mt5_manager import MT5Manager
+    from src.core.data_manager import DataManager
     
     # Import del PositionMonitor desde real_time
-    from real_time.position_monitor import PositionMonitor
+    from src.core.real_time.position_monitor import PositionMonitor
     
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
@@ -128,13 +127,13 @@ def test_position_monitor_basic():
         print("🎯 Monitoreo de posiciones inicializado correctamente")
         print("🔗 Integración SÓTANO 1 validada")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"\n❌ ERROR en test PositionMonitor: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"Error en test PositionMonitor: {e}"
 
 
 def test_position_monitoring_integration():
@@ -178,11 +177,11 @@ def test_position_monitoring_integration():
         
         print("✅ Integración de monitoreo: Sin errores críticos")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en integración: {e}")
-        return False
+        assert False, f"Error en integración: {e}"
 
 
 def test_alert_system():
@@ -228,11 +227,11 @@ def test_alert_system():
         assert len(monitor.alert_callbacks) == 1, "Callback no removido"
         print("✅ Desuscripción: OK")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de alertas: {e}")
-        return False
+        assert False, f"Error en test de alertas: {e}"
 
 
 def main():
@@ -259,7 +258,7 @@ def main():
     print("-" * 50)
     try:
         # Verificar que el sistema SÓTANO 1 sigue funcionando
-        from analytics_manager import AnalyticsManager
+        from src.core.analytics_manager import AnalyticsManager
         config = ConfigManager()
         logger = LoggerManager()
         error = ErrorManager(logger)
@@ -289,11 +288,11 @@ def main():
         print("✅ Integración SÓTANO 1: Sin conflictos")
         print("✅ Sistema de alertas: Funcional")
         print("🎯 PRÓXIMO: Alert Engine - Motor de alertas avanzado")
-        return True
+        assert True  # Test exitoso
     else:
         print(f"\n❌ DÍA 2 CON PROBLEMAS")
         print("🔧 Revisar implementación antes de continuar")
-        return False
+        assert False, "Día 2 completado con problemas"
 
 
 if __name__ == "__main__":

@@ -278,8 +278,8 @@ class TestAnalyticsManagerFase12(unittest.TestCase):
         self.assertTrue(status["active"])
         self.assertTrue(status["performance_tracker"])
         self.assertTrue(status["grid_analytics"])
-        self.assertEqual(status["version"], "1.2.0")
-        self.assertEqual(status["phase"], "FASE_1.2_GRID_ANALYTICS")
+        self.assertEqual(status["version"], "1.3.0")  # Actualizada a versión actual
+        self.assertEqual(status["phase"], "FASE_1.3_MARKET_ANALYTICS")  # Actualizada a fase actual
         
         print("✅ Estado del sistema actualizado correctamente")
     

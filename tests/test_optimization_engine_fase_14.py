@@ -95,6 +95,10 @@ class TestOptimizationEngineFase14(unittest.TestCase):
         
         # Inicializar para tests
         self.optimization_engine.initialize()
+        
+        # Limpiar historial de optimizaciones previas para tests limpios
+        self.optimization_engine.optimization_results.clear()
+        self.optimization_engine.last_optimization = None
     
     def test_01_optimization_engine_initialization(self):
         """Test: Inicialización correcta del OptimizationEngine"""

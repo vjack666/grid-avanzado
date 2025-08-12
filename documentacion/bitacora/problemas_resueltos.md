@@ -1,7 +1,7 @@
 # 🔧 PROBLEMAS RESUELTOS
 
 **Proyecto:** Sistema Trading Grid  
-**Última Actualización:** Agosto 10, 2025
+**Última Actualización:** Agosto 12, 2025
 
 ---
 
@@ -9,22 +9,121 @@
 
 ### **🚨 Estado General de Issues**
 ```
-Total Issues Registrados: 3
-├── ✅ Resueltos: 2 (67%)
-├── 🔄 En progreso: 1 (33%)
+Total Issues Registrados: 6
+├── ✅ Resueltos: 5 (83%)
+├── 🔄 En progreso: 1 (17%)
 ├── ❌ Abiertos: 0 (0%)
-└── 🏆 Resolution Rate: 67%
+└── 🏆 Resolution Rate: 83%
 ```
 
 ### **📈 Tendencias de Problemas**
-- **Tiempo promedio resolución:** 2-4 horas
-- **Categoría más común:** Performance y conexión MT5
+- **Tiempo promedio resolución:** 1-3 horas
+- **Categoría más común:** Configuración y type safety
 - **Severidad promedio:** Media
 - **Prevención exitosa:** 0 problemas recurrentes
 
 ---
 
 ## ✅ **PROBLEMAS RESUELTOS**
+
+### **✅ 12/08/2025 - PROBLEMA: IMPORTS_CENTRALIZADOS - RESUELTO**
+
+#### **🚨 DESCRIPCIÓN DEL PROBLEMA:**
+- **Componente afectado:** Múltiples archivos del proyecto
+- **Síntomas:** Variables como 'pd' no definidas en Pylance, imports dispersos
+- **Impacto:** Alto - Experiencia de desarrollo degradada, warnings constantes
+- **Detectado en:** Pylance analysis en temp_indicator_methods.py
+
+#### **🔍 ANÁLISIS Y DIAGNÓSTICO:**
+```
+Root Cause Analysis:
+├── 🎯 Causa raíz: Imports dispersos sin gestión centralizada
+├── 🔄 Factores contribuyentes: 
+│   ├── Variables pandas/numpy sin imports explícitos
+│   ├── Dependencias opcionales no validadas
+│   └── Sin estándar de imports para nuevos archivos
+├── 📊 Datos del error: 'pd' is not defined en Pylance
+└── 🕐 Timeline: Problema recurrente en múltiples archivos
+```
+
+#### **⚡ SOLUCIÓN IMPLEMENTADA:**
+- **Approach:** Sistema de imports centralizados con detección automática
+- **Archivo:** `src/core/common_imports.py` creado
+- **Features:** 
+  - Detección automática de librerías disponibles
+  - Validación de dependencias críticas
+  - Configuración optimizada para pandas/numpy
+  - Logging de estado de imports
+- **Beneficio:** Imports consistentes, menos warnings, mejor experiencia
+
+### **✅ 12/08/2025 - PROBLEMA: ERROR_HANDLING_INCONSISTENTE - RESUELTO**
+
+#### **🚨 DESCRIPCIÓN DEL PROBLEMA:**
+- **Componente afectado:** Componentes SÓTANO 1
+- **Síntomas:** Manejo de errores inconsistente, diferentes patrones
+- **Impacto:** Medio - Dificultad para debugging y mantenimiento
+- **Detectado en:** Review de código y tests
+
+#### **🔍 ANÁLISIS Y DIAGNÓSTICO:**
+```
+Root Cause Analysis:
+├── 🎯 Causa raíz: Falta de patrón estándar de error handling
+├── 🔄 Factores contribuyentes: 
+│   ├── Diferentes estructuras de respuesta de error
+│   ├── ErrorManager no utilizado consistentemente
+│   └── Sin estándar para excepciones
+├── 📊 Datos del error: Inconsistencia en try/catch blocks
+└── 🕐 Timeline: Problema acumulado durante desarrollo
+```
+
+#### **⚡ SOLUCIÓN IMPLEMENTADA:**
+- **Approach:** Patrón centralizado con ErrorManager.handle_system_error()
+- **Pattern:**
+```python
+try:
+    result = operation()
+    return result
+except Exception as e:
+    self.error.handle_system_error("ERROR_TYPE", f"Descripción: {e}")
+    return {"error": str(e)}
+```
+- **Estado:** 100% implementado en todos los componentes SÓTANO 1
+
+### **✅ 12/08/2025 - PROBLEMA: PYLANCE_WARNINGS_EXCESIVOS - RESUELTO**
+
+#### **🚨 DESCRIPCIÓN DEL PROBLEMA:**
+- **Componente afectado:** Configuración VS Code/Pylance
+- **Síntomas:** Warnings excesivos, experiencia de desarrollo degradada
+- **Impacto:** Medio - Distracción durante desarrollo
+- **Detectado en:** Configuración Pylance en modo "strict"
+
+#### **🔍 ANÁLISIS Y DIAGNÓSTICO:**
+```
+Root Cause Analysis:
+├── 🎯 Causa raíz: Configuración Pylance demasiado estricta
+├── 🔄 Factores contribuyentes: 
+│   ├── Mode "strict" con todos los warnings habilitados
+│   ├── Bibliotecas third-party sin type stubs completos
+│   └── Sin configuración específica para el proyecto
+├── 📊 Datos del error: Cientos de warnings no críticos
+└── 🕐 Timeline: Problema desde inicio del proyecto
+```
+
+#### **⚡ SOLUCIÓN IMPLEMENTADA:**
+- **Approach:** Configuración Pylance optimizada para el proyecto
+- **Settings:**
+```json
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportUndefinedVariable": "error",
+        "reportMissingImports": "error",
+        "reportMissingTypeStubs": "information",
+        "reportGeneralTypeIssues": "information"
+    }
+}
+```
+- **Beneficio:** Solo errores críticos mostrados, mejor experiencia
 
 ### **✅ 08/08/2025 - PROBLEMA: TIMEOUT_CONEXION_MT5 - RESUELTO**
 

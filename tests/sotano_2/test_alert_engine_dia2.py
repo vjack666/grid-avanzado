@@ -27,14 +27,13 @@ sys.path.insert(0, str(src_core.absolute()))
 
 # Imports absolutos con validación
 try:
-    # Importar desde src/core directamente
-    sys.path.append(str(src_core))
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager  
-    from error_manager import ErrorManager
+    # Importar desde src.core usando imports absolutos
+    from src.core.config_manager import ConfigManager
+    from src.core.logger_manager import LoggerManager  
+    from src.core.error_manager import ErrorManager
     
     # Import del AlertEngine desde real_time
-    from real_time.alert_engine import AlertEngine, AlertPriority, AlertChannel, Alert
+    from src.core.real_time.alert_engine import AlertEngine, AlertPriority, AlertChannel, Alert
     
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
@@ -101,13 +100,11 @@ def test_alert_engine_basic():
         print("🎯 Motor de alertas inicializado correctamente")
         print("🔗 Integración SÓTANO 1 validada")
         
-        return True
-        
     except Exception as e:
         print(f"\n❌ ERROR en test AlertEngine: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        raise AssertionError(f"Test AlertEngine failed: {e}")
 
 
 def test_alert_sending_and_management():
@@ -178,11 +175,9 @@ def test_alert_sending_and_management():
         assert len(active_alerts) == 3, "Múltiples alertas no enviadas"
         print("✅ Múltiples alertas: OK")
         
-        return True
-        
     except Exception as e:
         print(f"❌ Error en test de alertas: {e}")
-        return False
+        raise AssertionError(f"Test alert sending failed: {e}")
 
 
 def test_notification_channels():
@@ -247,11 +242,9 @@ def test_notification_channels():
         assert "LOG:Test Notification 2" not in log_notifications, "LOG recibió notificación después de desuscribirse"
         print("✅ Desuscripción: Funcional")
         
-        return True
-        
     except Exception as e:
         print(f"❌ Error en test de canales: {e}")
-        return False
+        raise AssertionError(f"Test notification channels failed: {e}")
 
 
 def test_filtering_and_throttling():
@@ -323,11 +316,9 @@ def test_filtering_and_throttling():
         assert metrics['alerts_filtered'] >= 2, "Métricas de filtrado incorrectas"
         print("✅ Métricas de filtrado: Actualizadas")
         
-        return True
-        
     except Exception as e:
         print(f"❌ Error en test de filtrado: {e}")
-        return False
+        raise AssertionError(f"Test filtering failed: {e}")
 
 
 def test_engine_lifecycle():
@@ -384,11 +375,9 @@ def test_engine_lifecycle():
         assert alert_id2 != "", "Alerta no enviada con motor parado"
         print("✅ Alerta con motor parado: OK")
         
-        return True
-        
     except Exception as e:
         print(f"❌ Error en test de ciclo de vida: {e}")
-        return False
+        raise AssertionError(f"Test lifecycle failed: {e}")
 
 
 def main():
@@ -401,28 +390,48 @@ def main():
     # Ejecutar tests
     test_results = []
     
-    # Test 1: Funcionalidad básica
-    test_results.append(test_alert_engine_basic())
+    try:
+        # Test 1: Funcionalidad básica
+        test_alert_engine_basic()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
-    # Test 2: Envío y manejo de alertas
-    test_results.append(test_alert_sending_and_management())
+    try:
+        # Test 2: Envío y manejo de alertas
+        test_alert_sending_and_management()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
-    # Test 3: Canales de notificación
-    test_results.append(test_notification_channels())
+    try:
+        # Test 3: Canales de notificación
+        test_notification_channels()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
-    # Test 4: Filtrado y throttling
-    test_results.append(test_filtering_and_throttling())
+    try:
+        # Test 4: Filtrado y throttling
+        test_filtering_and_throttling()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
-    # Test 5: Ciclo de vida del motor
-    test_results.append(test_engine_lifecycle())
+    try:
+        # Test 5: Ciclo de vida del motor
+        test_engine_lifecycle()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
     # Test 6: Compatibilidad con sistema existente
     print("\n🔄 TEST COMPATIBILIDAD CON SISTEMA EXISTENTE")
     print("-" * 50)
     try:
         # Verificar que el sistema SÓTANO 1 sigue funcionando
-        from analytics_manager import AnalyticsManager
-        from data_manager import DataManager
+        from src.core.analytics_manager import AnalyticsManager
+        from src.core.data_manager import DataManager
         config = ConfigManager()
         logger = LoggerManager()
         error = ErrorManager(logger)
@@ -454,13 +463,12 @@ def main():
         print("✅ Filtrado y throttling: Funcional")
         print("✅ Ciclo de vida: Funcional")
         print("🎯 PRÓXIMO: Performance Tracker - Seguimiento de rendimiento")
-        return True
+        assert tests_passed == tests_total, f"Tests fallidos: {tests_total - tests_passed}"
     else:
         print(f"\n❌ DÍA 2 CON PROBLEMAS")
         print("🔧 Revisar implementación antes de continuar")
-        return False
+        raise AssertionError(f"Tests fallidos: {tests_total - tests_passed}")
 
 
 if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
+    main()

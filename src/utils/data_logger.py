@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Configurar rutas para imports
 current_dir = Path(__file__).parent
-project_root = current_dir / "."
+project_root = current_dir.parent.parent  # Ir dos niveles hacia arriba desde src/utils
 sys.path.insert(0, str(project_root.absolute()))
 sys.path.insert(0, str((project_root / "src" / "core").absolute()))
 sys.path.insert(0, str((project_root / "src" / "analysis").absolute()))
@@ -22,7 +22,7 @@ from datetime import datetime
 import pytz
 
 # Importar constantes y log_debug desde config
-from config import SIMBOLO, SAFE_DATA_DIR, ZONA_HORARIA_LOCAL, log_debug
+from config import SIMBOLO, SAFE_DATA_DIR, ZONA_HORARIA_LOCAL, log_debug  # type: ignore
 
 # =============================================================================
 # SECCIÓN 2: DEFINICIÓN DE RUTAS DE ARCHIVOS CSV DE LOG
@@ -36,7 +36,7 @@ LOG_ERRORES_CRITICOS_PATH = os.path.join(SAFE_DATA_DIR, "log_errores_criticos.cs
 # SECCIÓN 3: FUNCIONES DE INICIALIZACIÓN DE CSVs ESPECÍFICOS
 # =============================================================================
 
-def inicializar_csvs_logger():
+def inicializar_csvs_logger() -> None:
     """
     Crea los archivos CSV de log si no existen y escribe los encabezados.
     Esta función complementa a inicializar_csvs en config.py.
@@ -109,10 +109,12 @@ def inicializar_csvs_logger():
 # =============================================================================
 
 def log_operacion_ejecutada(
-    simbolo, tipo_orden, volumen_solicitado, precio_solicitado, sl_solicitado, tp_solicitado,
-    estrategia_origen, cruce_estocastico, zona_estocastico, fase_bollinger, ancho_banda_bollinger,
-    resultado_mt5_retcode, resultado_mt5_comment, ticket_orden_mt5, precio_ejecucion, error_detalle=""
-):
+    simbolo: str, tipo_orden: str, volumen_solicitado: float, precio_solicitado: float, 
+    sl_solicitado: float, tp_solicitado: float, estrategia_origen: str, cruce_estocastico: str, 
+    zona_estocastico: str, fase_bollinger: str, ancho_banda_bollinger: float,
+    resultado_mt5_retcode: int, resultado_mt5_comment: str, ticket_orden_mt5: int, 
+    precio_ejecucion: float, error_detalle: str = ""
+) -> None:
     """Registra los detalles de cada intento de operación."""
     tz = pytz.timezone(ZONA_HORARIA_LOCAL)
     now_utc = datetime.utcnow()

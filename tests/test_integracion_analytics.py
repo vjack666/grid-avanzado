@@ -48,7 +48,7 @@ def test_integracion_analytics():
             print("✅ AnalyticsManager inicializado correctamente")
         else:
             print("❌ Error inicializando AnalyticsManager")
-            return False
+            assert False, "Error inicializando AnalyticsManager"
         
         # 4. Test básico de funcionalidad
         print("3️⃣ Probando funcionalidades básicas...")
@@ -157,13 +157,13 @@ def test_integracion_analytics():
         print("🎯 INTEGRACIÓN FASE 1.3 COMPLETADA EXITOSAMENTE")
         print("✅ AnalyticsManager con Performance + Grid + Market Analytics")
         print("📊 Análisis estocástico integrado para primera orden")
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"\n❌ ERROR EN INTEGRACIÓN: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"Error en integración: {e}"
 
 
 if __name__ == "__main__":

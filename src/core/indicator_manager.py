@@ -4,23 +4,7 @@ FASE 5: IndicatorManager - Gestión Avanzada de Indicadores Técnicos
 
 IndicatorManager centraliza la gestión de indicadores técnicos avanzados,
 señales compuestas, y analytics de performance. Se integra con DataManager
-para optimizar el uso                    except Exception as e:
-            if self.error_manager:
-                self.error_manager.handle_data_error("Williams_calculation", e)
-            # Devolver DataFrame vacío en lugar de None para trading
-            return pd.DataFrame()except Exception as e:
-            if self.error_manager:
-                self.error_manager.handle_data_error("Stoch_calculation", e)
-            # Devolver DataFrame vacío en lugar de None para trading
-            return pd.DataFrame()except Exception as e:
-            if self.error_manager:
-                self.error_manager.handle_data_error("RSI_calculation", e)
-            # Devolver DataFrame vacío en lugar de None para trading
-            return pd.DataFrame()except Exception as e:
-            if self.error_manager:
-                self.error_manager.handle_data_error("BB_calculation", e)
-            # Devolver DataFrame vacío en lugar de None para trading
-            return pd.DataFrame()datos y cache.
+para optimizar el uso de datos y cache.
 
 Funcionalidades:
 - Indicadores técnicos avanzados (MACD, EMA, Williams %R, ADX, ATR, CCI)
@@ -30,14 +14,12 @@ Funcionalidades:
 - Cache especializado para indicadores
 
 Autor: Sistema Trading Grid
-Fecha: 2025-08-10
+Fecha: 2025-08-12
 """
 
-import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Tuple, Union
-from datetime import datetime, timedelta
-import json
+# Import centralizado desde SÓTANO 1
+# Imports centralizados
+from .common_imports import pd, np, Dict, List, Optional, Tuple, Union, datetime, timedelta, json
 
 class IndicatorManager:
     """

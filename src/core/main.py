@@ -25,8 +25,8 @@ import keyboard
 from trading_schedule import esta_en_horario_operacion, mostrar_horario_operacion
 from analisis_estocastico_m15 import analizar_estocastico_m15_cacheado, mostrar_checkpoint_estocastico
 from grid_bollinger import evaluar_condiciones_grid
-from config_manager import ConfigManager
-from logger_manager import LoggerManager
+from .config_manager import ConfigManager
+from .logger_manager import LoggerManager
 from error_manager import ErrorManager
 from data_manager import DataManager
 from indicator_manager import IndicatorManager

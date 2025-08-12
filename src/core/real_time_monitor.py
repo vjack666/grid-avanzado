@@ -23,10 +23,10 @@ sys.path.insert(0, str((project_root / "src" / "core").absolute()))
 
 # Imports de SÓTANO 1 (PUERTAS) - Importar solo los básicos primero
 try:
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager
-    from error_manager import ErrorManager
-    from data_manager import DataManager
+    from .config_manager import ConfigManager
+    from .logger_manager import LoggerManager
+    from .error_manager import ErrorManager
+    from .data_manager import DataManager
     
     # Importar analytics y mt5 condicionalmente
     analytics_available = True

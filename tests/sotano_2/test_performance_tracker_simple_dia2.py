@@ -24,16 +24,15 @@ sys.path.insert(0, str(src_core.absolute()))
 
 # Imports absolutos con validación
 try:
-    # Importar desde src/core directamente
-    sys.path.append(str(src_core))
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager  
-    from error_manager import ErrorManager
-    from data_manager import DataManager
+    # Importar desde src.core usando imports absolutos
+    from src.core.config_manager import ConfigManager
+    from src.core.logger_manager import LoggerManager  
+    from src.core.error_manager import ErrorManager
+    from src.core.data_manager import DataManager
     
     # Import del PerformanceTracker desde real_time
-    from real_time.performance_tracker import PerformanceTracker, PerformanceSnapshot, TradeRecord
-    from real_time.alert_engine import AlertEngine
+    from src.core.real_time.performance_tracker import PerformanceTracker, PerformanceSnapshot, TradeRecord
+    from src.core.real_time.alert_engine import AlertEngine
     
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
@@ -88,13 +87,13 @@ def test_performance_tracker_basic():
         assert performance['calculated_metrics']['win_rate'] == 0.0, "Win rate inicial incorrecto"
         print("✅ Métricas iniciales: OK")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ ERROR en test PerformanceTracker: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, f"Error en test PerformanceTracker: {e}"
 
 
 def test_account_data_management():
@@ -149,11 +148,11 @@ def test_account_data_management():
         assert performance['account_state']['max_drawdown'] > 9.0, "Drawdown no calculado"
         print(f"✅ Drawdown calculado: {performance['account_state']['max_drawdown']:.2f}%")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de datos de cuenta: {e}")
-        return False
+        assert False, f"Error en test de datos de cuenta: {e}"
 
 
 def test_trade_calculations():
@@ -253,11 +252,11 @@ def test_trade_calculations():
         assert performance['account_state']['total_trades'] == 7, "Total trades incorrecto"
         print(f"✅ Total trades: {performance['account_state']['total_trades']}")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de trades: {e}")
-        return False
+        assert False, f"Error en test de trades: {e}"
 
 
 def test_dataframes_and_summary():
@@ -317,11 +316,11 @@ def test_dataframes_and_summary():
         print(f"✅ Summary balance: ${summary['balance']:,.2f}")
         print(f"✅ Summary trades: {summary['total_trades']}")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de DataFrames: {e}")
-        return False
+        assert False, f"Error en test de DataFrames: {e}"
 
 
 def test_performance_snapshot():
@@ -370,11 +369,11 @@ def test_performance_snapshot():
         assert current_snapshot.total_pnl == 300.0, "Current snapshot PnL incorrecto"
         print("✅ Current snapshot creado desde tracker")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"❌ Error en test de snapshot: {e}")
-        return False
+        assert False, f"Error en test de snapshot: {e}"
 
 
 def main():
@@ -407,7 +406,7 @@ def main():
     print("-" * 50)
     try:
         # Verificar que el sistema SÓTANO 1 sigue funcionando
-        from analytics_manager import AnalyticsManager
+        from src.core.analytics_manager import AnalyticsManager
         config = ConfigManager()
         logger = LoggerManager()
         error = ErrorManager(logger)
@@ -443,11 +442,11 @@ def main():
         print("\n🏆 SÓTANO 2 DÍA 2: 100% COMPLETADO")
         print("🎯 Todos los componentes de tiempo real implementados")
         print("📊 MT5Streamer + PositionMonitor + AlertEngine + PerformanceTracker")
-        return True
+        assert True  # Test exitoso
     else:
         print(f"\n❌ DÍA 2 CON PROBLEMAS")
         print("🔧 Revisar implementación antes de continuar")
-        return False
+        assert False, "Día 2 completado con problemas"
 
 
 if __name__ == "__main__":

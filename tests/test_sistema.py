@@ -27,7 +27,7 @@ print("=" * 60)
 print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print()
 
-def test_component(name, test_func):
+def check_component(name, test_func):
     """Ejecuta un test de componente y reporta el resultado"""
     print(f"🔧 Testing {name}...", end=" ")
     start_time = time.time()
@@ -56,10 +56,10 @@ def test_imports():
         import pandas as pd
         import numpy as np
         from rich.console import Console
-        return True
+        assert True  # Test exitoso
     except ImportError as e:
         print(f"   └─ Import error: {e}")
-        return False
+        assert False, f"Import error: {e}"
 
 def test_config():
     """Test del sistema de configuración"""
@@ -70,11 +70,11 @@ def test_config():
         for var in required_vars:
             if not hasattr(config, var):
                 print(f"   └─ Missing config variable: {var}")
-                return False
-        return True
+                assert False, f"Missing config variable: {var}"
+        assert True  # Test exitoso
     except Exception as e:
         print(f"   └─ Config error: {e}")
-        return False
+        assert False, f"Config error: {e}"
 
 def test_mt5_connection():
     """Test de conectividad con MT5"""
@@ -84,28 +84,28 @@ def test_mt5_connection():
         # Intentar inicializar MT5
         if not mt5.initialize():
             print("   └─ MT5 initialize failed")
-            return False
+            assert False, "MT5 initialize failed"
             
         # Verificar información de cuenta
         account_info = mt5.account_info()
         if account_info is None:
             print("   └─ No account info available")
             mt5.shutdown()
-            return False
+            assert False, "No account info available"
             
         # Verificar datos de símbolo
         symbol_info = mt5.symbol_info("EURUSD")
         if symbol_info is None:
             print("   └─ EURUSD symbol not available")
             mt5.shutdown()
-            return False
+            assert False, "EURUSD symbol not available"
             
         mt5.shutdown()
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"   └─ MT5 error: {e}")
-        return False
+        assert False, f"MT5 error: {e}"
 
 def test_grid_bollinger():
     """Test del sistema Grid Bollinger"""
@@ -131,14 +131,14 @@ def test_grid_bollinger():
         
         # La función puede retornar None si no hay operaciones, eso es válido
         if result is None or isinstance(result, tuple):
-            return True
+            assert True  # Test exitoso
         else:
             print(f"   └─ Unexpected result type: {type(result)}")
-            return False
+            assert False, f"Unexpected result type: {type(result)}"
             
     except Exception as e:
         print(f"   └─ Grid Bollinger error: {e}")
-        return False
+        assert False, f"Grid Bollinger error: {e}"
 
 def test_analisis_estocastico():
     """Test del análisis estocástico"""
@@ -161,14 +161,14 @@ def test_analisis_estocastico():
         )
         
         if isinstance(result, dict):
-            return True
+            assert True  # Test exitoso
         else:
             print(f"   └─ Unexpected result type: {type(result)}")
-            return False
+            assert False, f"Unexpected result type: {type(result)}"
             
     except Exception as e:
         print(f"   └─ Stochastic analysis error: {e}")
-        return False
+        assert False, f"Stochastic analysis error: {e}"
 
 def test_riskbot():
     """Test del sistema de gestión de riesgo"""
@@ -185,14 +185,14 @@ def test_riskbot():
         
         # Test de método básico (sin conexión MT5)
         if hasattr(riskbot, 'check_and_act'):
-            return True
+            assert True  # Test exitoso
         else:
             print("   └─ Missing check_and_act method")
-            return False
+            assert False, "Missing check_and_act method"
             
     except Exception as e:
         print(f"   └─ RiskBot error: {e}")
-        return False
+        assert False, f"RiskBot error: {e}"
 
 def test_data_logger():
     """Test del sistema de logging"""
@@ -201,7 +201,7 @@ def test_data_logger():
         import data_logger
         
         # Si se importa correctamente, es un éxito
-        return True
+        assert True  # Test exitoso
         
     except ImportError as e:
         # Si no se puede importar, intentar usar logging básico
@@ -209,14 +209,14 @@ def test_data_logger():
             import logging
             logger = logging.getLogger("test")
             logger.info("Test message from system test")
-            return True
+            assert True  # Test exitoso
         except Exception:
             print(f"   └─ Data Logger import error: {e}")
-            return False
+            assert False, f"Data Logger import error: {e}"
         
     except Exception as e:
         print(f"   └─ Data Logger error: {e}")
-        return False
+        assert False, f"Data Logger error: {e}"
 
 def test_trading_schedule():
     """Test del sistema de horarios"""
@@ -230,25 +230,25 @@ def test_trading_schedule():
         horario_info = mostrar_horario_operacion(sesiones_test)
         
         if isinstance(horario_status, bool) and isinstance(horario_info, str):
-            return True
+            assert True  # Test exitoso
         else:
             print(f"   └─ Unexpected return types: {type(horario_status)}, {type(horario_info)}")
-            return False
+            assert False, f"Unexpected return types: {type(horario_status)}, {type(horario_info)}"
             
     except Exception as e:
         print(f"   └─ Trading Schedule error: {e}")
-        return False
+        assert False, f"Trading Schedule error: {e}"
 
 def test_descarga_velas():
     """Test del sistema de descarga de velas"""
     try:
         # Verificar que el archivo existe y es válido sintácticamente
         import os
-        descarga_path = os.path.join(os.getcwd(), 'descarga_velas.py')
+        descarga_path = os.path.join(os.getcwd(), 'scripts', 'descarga_velas.py')
         
         if not os.path.exists(descarga_path):
             print("   └─ descarga_velas.py not found")
-            return False
+            assert False, "descarga_velas.py not found"
             
         # Verificar sintaxis sin ejecutar el código
         import ast
@@ -259,18 +259,18 @@ def test_descarga_velas():
             ast.parse(content)
         except SyntaxError as e:
             print(f"   └─ Syntax error: {e}")
-            return False
+            assert False, f"Syntax error: {e}"
             
         # Verificar que contiene las funciones de logging esperadas
         if 'log_info' in content and 'log_error' in content and 'log_success' in content:
-            return True
+            assert True  # Test exitoso
         else:
             print("   └─ Missing expected logging functions")
-            return False
+            assert False, "Missing expected logging functions"
             
     except Exception as e:
         print(f"   └─ Descarga Velas error: {e}")
-        return False
+        assert False, f"Descarga Velas error: {e}"
 
 def test_data_manager():
     """Test del sistema de manejo de datos"""
@@ -287,13 +287,13 @@ def test_data_manager():
         # Test de inicialización
         if not hasattr(data_manager, 'mt5_available'):
             print("   └─ DataManager missing mt5_available attribute")
-            return False
+            assert False, "DataManager missing mt5_available attribute"
         
         # Test de normalización de timeframe
         tf_normalized = data_manager.normalize_timeframe('M15')
         if not isinstance(tf_normalized, int):
             print("   └─ Timeframe normalization should return int")
-            return False
+            assert False, "Timeframe normalization should return int"
         
         # Test de sistema de cache
         test_data = {'test': 'data', 'timestamp': '2025-08-10'}
@@ -301,13 +301,13 @@ def test_data_manager():
         cached_data = data_manager.get_cached_data('test_key')
         if cached_data != test_data:
             print("   └─ Cache system not working correctly")
-            return False
+            assert False, "Cache system not working correctly"
         
         # Test de estadísticas de cache
         stats = data_manager.get_cache_stats()
         if not isinstance(stats, dict) or 'hit_ratio_percent' not in stats:
             print("   └─ Cache stats should be dict with hit_ratio_percent")
-            return False
+            assert False, "Cache stats should be dict with hit_ratio_percent"
         
         # Test de obtención de datos OHLC (pequeña muestra)
         if data_manager.mt5_available:
@@ -318,19 +318,19 @@ def test_data_manager():
                 missing_cols = [col for col in required_cols if col not in ohlc_data.columns]
                 if missing_cols:
                     print(f"   └─ Missing OHLC columns: {missing_cols}")
-                    return False
+                    assert False, f"Missing OHLC columns: {missing_cols}"
                 
                 # Test de validación de datos
                 is_valid = data_manager.validate_ohlc_data(ohlc_data)
                 if not is_valid:
                     print("   └─ OHLC data validation failed")
-                    return False
+                    assert False, "OHLC data validation failed"
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"   └─ Data Manager error: {e}")
-        return False
+        assert False, f"Data Manager error: {e}"
 
 def test_error_manager():
     """Test del sistema de manejo de errores"""
@@ -358,29 +358,29 @@ def test_error_manager():
             result = error_manager.handle_system_error("test_component", e)
             if not isinstance(result, bool):
                 print("   └─ Error handler should return boolean")
-                return False
+                assert False, "Error handler should return boolean"
         
         # Test de validación MT5 (también silencioso)
         mt5_valid = error_manager.validate_mt5_connection()
         if not isinstance(mt5_valid, bool):
             print("   └─ MT5 validation should return boolean")
-            return False
+            assert False, "MT5 validation should return boolean"
         
         # Test de resumen de errores
         summary = error_manager.get_error_summary()
         if not isinstance(summary, dict) or 'total_errors' not in summary:
             print("   └─ Error summary should be dict with total_errors")
-            return False
+            assert False, "Error summary should be dict with total_errors"
         
         print("   ✓ Error handling funcionando correctamente")
         print("   ✓ MT5 validation ejecutada")
         print("   ✓ Error summary generado")
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"   └─ Error Manager error: {e}")
-        return False
+        assert False, f"Error Manager error: {e}"
 
 def test_indicator_manager():
     """Test del IndicatorManager (FASE 5)"""
@@ -415,53 +415,53 @@ def test_indicator_manager():
         macd_result = indicator_manager.calculate_macd(df_test)
         if macd_result is None or 'MACD' not in macd_result.columns:
             print("   └─ MACD calculation failed")
-            return False
+            assert False, "MACD calculation failed"
         
         # EMA
         ema_result = indicator_manager.calculate_ema(df_test, 20)
         if ema_result is None or 'EMA_20' not in ema_result.columns:
             print("   └─ EMA calculation failed")
-            return False
+            assert False, "EMA calculation failed"
         
         # Williams %R
         williams_result = indicator_manager.calculate_williams_r(df_test)
         if williams_result is None or 'Williams_R' not in williams_result.columns:
             print("   └─ Williams %R calculation failed")
-            return False
+            assert False, "Williams %R calculation failed"
         
         # ATR
         atr_result = indicator_manager.calculate_atr(df_test)
         if atr_result is None or 'ATR' not in atr_result.columns:
             print("   └─ ATR calculation failed")
-            return False
+            assert False, "ATR calculation failed"
         
         # Test cache especializado
         indicator_manager.cache_indicator_result('test_indicator', {'data': 'test'})
         cached_indicator = indicator_manager.get_cached_indicator('test_indicator')
         if cached_indicator is None or cached_indicator.get('data') != 'test':
             print("   └─ Indicator cache not working")
-            return False
+            assert False, "Indicator cache not working"
         
         # Test señales compuestas (con datos mock en DataManager)
         data_manager.cache_data("EURUSD_M15_50", df_test, 300)
         signal = indicator_manager.generate_compound_signal("EURUSD", "M15", "balanced")
         if signal is None or 'signal' not in signal:
             print("   └─ Compound signal generation failed")
-            return False
+            assert False, "Compound signal generation failed"
         
         if signal['signal'] not in ['BUY', 'SELL', 'HOLD', 'NO_DATA', 'ERROR']:
             print(f"   └─ Invalid signal type: {signal['signal']}")
-            return False
+            assert False, f"Invalid signal type: {signal['signal']}"
         
         if 'strength' not in signal or not isinstance(signal['strength'], (int, float)):
             print("   └─ Signal strength validation failed")
-            return False
+            assert False, "Signal strength validation failed"
         
-        return True
+        assert True  # Test exitoso
         
     except Exception as e:
         print(f"   └─ Indicator Manager error: {e}")
-        return False
+        assert False, f"Indicator Manager error: {e}"
 
 def test_mt5_manager():
     """Test básico de MT5Manager (usando mocks)"""
@@ -525,16 +525,16 @@ def test_mt5_manager():
             print("   ✓ Estado de conexión manejado")
             print("   ✓ Cleanup ejecutado correctamente")
             
-            return True
+            assert True  # Test exitoso
             
     except AssertionError as e:
         print(f"   ❌ Assertion error en MT5Manager: {str(e)}")
-        return False
+        assert False, f"Assertion error en MT5Manager: {str(e)}"
     except Exception as e:
         print(f"   ❌ Error en MT5Manager: {str(e)}")
         import traceback
         print(f"   └─ Traceback: {traceback.format_exc()}")
-        return False
+        assert False, f"Error en MT5Manager: {str(e)}"
 
 # Ejecutar todos los tests
 def main():
@@ -558,7 +558,7 @@ def main():
     total_start = time.time()
     
     for test_name, test_func in tests:
-        success = test_component(test_name, test_func)
+        success = check_component(test_name, test_func)
         results.append((test_name, success))
     
     total_time = time.time() - total_start

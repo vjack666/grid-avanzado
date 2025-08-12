@@ -592,8 +592,11 @@ class TestAdvancedAnalyzerStatus:
     
     def test_get_status_with_error_handling(self, analyzer):
         """Test manejo de errores en obtención de estado"""
-        # Simular error en get_analyzer_status
-        with patch.object(analyzer, 'analyzer_config', side_effect=Exception("Test error")):
+        # Simular error más realista: configuración que no tiene método copy
+        mock_config = Mock()
+        mock_config.copy.side_effect = Exception("Test error")
+        
+        with patch.object(analyzer, 'analyzer_config', mock_config):
             status = analyzer.get_analyzer_status()
             assert "error" in status
             assert "Test error" in status["error"]

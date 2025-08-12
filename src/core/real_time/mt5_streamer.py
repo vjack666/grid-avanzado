@@ -30,10 +30,10 @@ sys.path.insert(0, str(project_root.absolute()))
 sys.path.insert(0, str((project_root / "src" / "core").absolute()))
 
 try:
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager
-    from error_manager import ErrorManager
-    from mt5_manager import MT5Manager
+    from ..config_manager import ConfigManager
+    from ..logger_manager import LoggerManager
+    from ..error_manager import ErrorManager
+    from ..mt5_manager import MT5Manager
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
     sys.exit(1)
@@ -357,7 +357,7 @@ def main():
     
     try:
         # Imports para testing
-        from config_manager import ConfigManager
+        from ..config_manager import ConfigManager
         from logger_manager import LoggerManager
         from error_manager import ErrorManager
         from mt5_manager import MT5Manager

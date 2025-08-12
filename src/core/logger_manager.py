@@ -1,6 +1,8 @@
 """
 LoggerManager simplificado para Trading Grid
 """
+import logging
+from typing import Optional
 
 class LoggerManager:
     def __init__(self):
@@ -11,6 +13,16 @@ class LoggerManager:
             self.has_rich = True
         except ImportError:
             self.has_rich = False
+        
+        # Configurar logging básico
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+    
+    def get_logger(self, name: str) -> logging.Logger:
+        """Obtener logger estándar de Python"""
+        return logging.getLogger(name)
     
     def log_info(self, mensaje):
         import datetime

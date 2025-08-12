@@ -15,10 +15,10 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from config_manager import ConfigManager
-from logger_manager import LoggerManager
-from error_manager import ErrorManager
-from data_manager import DataManager
+from .config_manager import ConfigManager
+from .logger_manager import LoggerManager
+from .error_manager import ErrorManager
+from .data_manager import DataManager
 
 
 @dataclass

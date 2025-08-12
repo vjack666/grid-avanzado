@@ -1,1 +1,1 @@
-"""src.utils package"""\n
+"""src.utils package"""

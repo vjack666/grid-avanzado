@@ -9,13 +9,39 @@
 
 ### **🎯 Estado General del Sistema**
 ```
-Total Componentes SÓTANO 1: 8 (100% COMPLETADOS)
-Total Componentes SÓTANO 2: 4 (25% COMPLETADOS)
-├── ✅ SÓTANO 1 Completados: 8/8 (100%)
-├── ✅ SÓTANO 2 Completados: 1/4 (25%)
-├── 🔄 SÓTANO 2 En desarrollo: 3/4 (75%)
-└── 🏆 Funcionalidad total: 75% operativa
+Total Componentes SÓTANO 1: 8 (100% COMPLETADOS + MEJORADOS)
+Total Componentes SÓTANO 2: 17 (94% COMPLETADOS)
+├── ✅ SÓTANO 1 Completados: 8/8 (100% - Con mejoras implementadas)
+├── ✅ SÓTANO 2 Completados: 16/17 (94%)
+├── 🔄 SÓTANO 2 En desarrollo: 1/17 (6%)
+└── 🏆 Funcionalidad total: 96% operativa
 ```
+
+### **📦 NUEVAS FUNCIONALIDADES SÓTANO 1 (12/08/2025)**
+
+#### **🆕 Sistema de Imports Centralizados**
+- **Componente:** `src/core/common_imports.py`
+- **Funcionalidad:** Gestión centralizada de todas las dependencias
+- **Features:** Detección automática, validación, configuración optimizada
+- **Estado:** ✅ Implementado y validado en scripts nuevos
+
+#### **🛡️ Error Handling Centralizado Mejorado**
+- **Patrón:** ErrorManager.handle_system_error() estándar
+- **Implementado en:** Todos los componentes SÓTANO 1
+- **Beneficio:** Consistencia total en manejo de errores
+- **Estado:** ✅ 100% implementado
+
+#### **📈 IndicatorManager Expandido**
+- **Nuevas Estrategias:** 4 estrategias de trading integradas
+- **Métodos Añadidos:** _calculate_indicators_for_signal()
+- **Integración:** temp_indicator_methods.py movido al core
+- **Estado:** ✅ Completamente funcional
+
+#### **⚙️ Configuración Pylance Optimizada**
+- **Modo:** basic (solo errores críticos)
+- **Diagnostics:** Configuración específica por tipo
+- **Resultado:** Mejor experiencia de desarrollo
+- **Estado:** ✅ Implementado
 
 ---
 

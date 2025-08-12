@@ -18,8 +18,8 @@ from datetime import datetime
 from typing import Dict, Any
 import json
 
-# Configurar paths
-sys.path.insert(0, os.getcwd())
+# Configurar paths - ahora estamos en scripts/
+sys.path.insert(0, os.path.dirname(os.getcwd()))
 
 def run_pytest_with_details():
     """Ejecutar pytest y capturar resultados detallados"""
@@ -29,7 +29,7 @@ def run_pytest_with_details():
     # Ejecutar pytest con output detallado
     cmd = [
         sys.executable, "-m", "pytest", 
-        "tests/sotano_2/", 
+        "../tests/sotano_2/",  # Ajustar path desde scripts/
         "-v", 
         "--tb=short",
         "--no-header",

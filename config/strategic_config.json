@@ -1,0 +1,37 @@
+{
+  "thresholds": {
+    "trend_threshold": 0.6,
+    "volatility_threshold": 0.7,
+    "signal_threshold": 0.5,
+    "confidence_threshold": 0.6,
+    "opportunity_threshold": 0.5,
+    "risk_threshold": 0.5
+  },
+  "weights": {
+    "analytics_weight": 0.25,
+    "indicators_weight": 0.25,
+    "market_data_weight": 0.25,
+    "configuration_weight": 0.25,
+    "base_confidence": 0.5,
+    "analytics_confidence_boost": 0.2,
+    "indicators_confidence_multiplier": 0.1,
+    "max_indicators_boost": 0.3,
+    "indicators_divisor": 4.0,
+    "signal_opportunity_weight": 0.6,
+    "confidence_opportunity_weight": 0.4
+  },
+  "operations": {
+    "update_interval": 5.0,
+    "max_retry_attempts": 3,
+    "timeout_seconds": 30.0,
+    "enable_detailed_logging": true,
+    "enable_performance_monitoring": false
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created_by": "Trading Grid System",
+    "description": "Configuración estratégica SÓTANO 3 - Sin valores hardcodeados",
+    "created_date": "2025-08-12",
+    "notes": "Configuración base para eliminar hardcoding en FoundationBridge"
+  }
+}

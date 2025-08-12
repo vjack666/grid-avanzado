@@ -27,18 +27,17 @@ sys.path.insert(0, str(src_core.absolute()))
 
 # Imports absolutos con validación
 try:
-    # Importar desde src/core directamente
-    sys.path.append(str(src_core))
-    from config_manager import ConfigManager
-    from logger_manager import LoggerManager  
-    from error_manager import ErrorManager
-    from mt5_manager import MT5Manager
+    # Importar desde src.core usando imports absolutos
+    from src.core.config_manager import ConfigManager
+    from src.core.logger_manager import LoggerManager  
+    from src.core.error_manager import ErrorManager
+    from src.core.mt5_manager import MT5Manager
     
     # Import del MT5Streamer desde real_time
-    from real_time.mt5_streamer import MT5Streamer
+    from src.core.real_time.mt5_streamer import MT5Streamer
     
     # Import para test de compatibilidad
-    from analytics_manager import AnalyticsManager
+    from src.core.analytics_manager import AnalyticsManager
     
 except ImportError as e:
     print(f"❌ Error importando dependencias: {e}")
@@ -113,13 +112,11 @@ def test_mt5_streamer_basic():
         print("🎯 Streaming MT5 inicializado correctamente")
         print("🔗 Integración SÓTANO 1 validada")
         
-        return True
-        
     except Exception as e:
         print(f"\n❌ ERROR en test MT5Streamer: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        raise AssertionError(f"Test MT5Streamer failed: {e}")
 
 
 def test_streaming_integration():
@@ -157,11 +154,9 @@ def test_streaming_integration():
         
         print("✅ Integración de streaming: Sin errores críticos")
         
-        return True
-        
     except Exception as e:
         print(f"❌ Error en integración: {e}")
-        return False
+        raise AssertionError(f"Test streaming integration failed: {e}")
 
 
 def main():
@@ -174,19 +169,27 @@ def main():
     # Ejecutar tests
     test_results = []
     
-    # Test 1: Funcionalidad básica
-    test_results.append(test_mt5_streamer_basic())
+    try:
+        # Test 1: Funcionalidad básica
+        test_mt5_streamer_basic()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
-    # Test 2: Integración de streaming
-    test_results.append(test_streaming_integration())
+    try:
+        # Test 2: Integración de streaming
+        test_streaming_integration()
+        test_results.append(True)
+    except Exception:
+        test_results.append(False)
     
     # Test 3: Compatibilidad con sistema existente
     print("\n🔄 TEST COMPATIBILIDAD CON SISTEMA EXISTENTE")
     print("-" * 50)
     try:
         # Verificar que el sistema SÓTANO 1 sigue funcionando
-        from analytics_manager import AnalyticsManager
-        from data_manager import DataManager
+        from src.core.analytics_manager import AnalyticsManager
+        from src.core.data_manager import DataManager
         config = ConfigManager()
         logger = LoggerManager()
         error = ErrorManager(logger)
@@ -215,13 +218,12 @@ def main():
         print("✅ PUERTA-S2-STREAMER: Funcional")
         print("✅ Integración SÓTANO 1: Sin conflictos")
         print("🎯 PRÓXIMO: Position Monitor - Monitoreo de posiciones")
-        return True
+        assert tests_passed == tests_total, f"Tests fallidos: {tests_total - tests_passed}"
     else:
         print(f"\n❌ DÍA 2 CON PROBLEMAS")
         print("🔧 Revisar implementación antes de continuar")
-        return False
+        raise AssertionError(f"Tests fallidos: {tests_total - tests_passed}")
 
 
 if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
+    main()

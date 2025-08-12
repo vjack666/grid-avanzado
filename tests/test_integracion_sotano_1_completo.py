@@ -171,13 +171,15 @@ def test_integracion_sotano_1_completo():
         print("📊 Sistema completo funcionando correctamente")
         print("=" * 60)
         
-        return True
+        # Assert en lugar de return
+        assert True, "Test de integración completado exitosamente"
         
     except Exception as e:
         print(f"\n❌ ERROR EN INTEGRACIÓN: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        # Assert en lugar de return  
+        assert False, f"Test de integración falló: {e}"
 
 
 if __name__ == "__main__":

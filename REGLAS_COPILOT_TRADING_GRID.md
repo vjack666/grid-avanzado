@@ -92,9 +92,22 @@ type documentacion\bitacora\desarrollo_diario.md      # Ver última sesión
 #### **🔧 VALIDACIONES OBLIGATORIAS:**
 ```bash
 # ✅ TESTS QUE SIEMPRE DEBEN PASAR:
-python tests/test_sistema.py              # Suite completa (debe ser 9/9)
+python tests/test_sistema.py              # Suite completa (debe ser 168/168)
 python src/core/main.py                   # Sistema debe arrancar sin errores
 python scripts/reparar_imports.py         # Reparar imports si es necesario
+python verificar_mt5_exclusivo.py         # Verificar terminal MT5 exclusivo
+```
+
+#### **🚨 REGLA CRÍTICA MT5: TERMINAL EXCLUSIVO OBLIGATORIO**
+```bash
+# ⚠️ ANTES DE CUALQUIER OPERACIÓN MT5:
+python verificar_mt5_exclusivo.py
+
+# 🎯 ASEGURAR:
+✅ Solo FundedNext MT5 Terminal ejecutándose
+✅ Cerrar automáticamente otros terminales MT5
+✅ Conexión verificada con cuenta real
+✅ Cumplimiento de reglas de exclusividad
 ```
 
 #### **🎯 CRITERIOS DE TESTING:**
@@ -104,11 +117,50 @@ python scripts/reparar_imports.py         # Reparar imports si es necesario
 - Tener resultado claro (PASS/FAIL)
 - No requerir intervención manual
 - Validar todos los imports críticos
-- Verificar conectividad MT5 
+- Verificar conectividad MT5 exclusivo (FundedNext)
 - Probar funciones principales
 ```
 
-### 📝 **REGLA #6: DOCUMENTACIÓN DE CAMBIOS**
+### 🚨 **REGLA #6: TERMINAL MT5 EXCLUSIVO - FUNDEDNEXT OBLIGATORIO**
+
+#### **📋 CONFIGURACIÓN CRÍTICA:**
+```
+🎯 TERMINAL AUTORIZADO ÚNICO:
+✅ Ruta: C:\Program Files\FundedNext MT5 Terminal\terminal64.exe
+✅ Proceso: terminal64.exe (solo FundedNext)
+✅ Cuenta: 1511236436 (FTMO-Demo)
+✅ Balance: $9,996.50
+✅ Servidor: FTMO-Demo
+
+❌ TERMINALES PROHIBIDOS:
+❌ Cualquier otro terminal64.exe que NO sea FundedNext
+❌ MetaTrader 5 estándar
+❌ Otros brokers MT5
+```
+
+#### **🔧 HERRAMIENTAS DE CUMPLIMIENTO:**
+```bash
+# ✅ VERIFICAR ESTADO ACTUAL:
+python verificar_mt5_exclusivo.py
+
+# 🚨 ACCIONES AUTOMÁTICAS:
+- Cerrar terminales MT5 no autorizados
+- Abrir FundedNext MT5 si está cerrado
+- Verificar conexión y cuenta
+- Reportar estado del sistema
+```
+
+#### **⚠️ PROTOCOLO DE EMERGENCIA:**
+```
+🚨 SI SE DETECTA TERMINAL NO AUTORIZADO:
+1. ✅ Ejecutar: python verificar_mt5_exclusivo.py
+2. ✅ Confirmar cierre de terminales no autorizados
+3. ✅ Verificar que solo FundedNext esté ejecutándose
+4. ✅ Validar conexión con cuenta real
+5. ✅ Proceder con operaciones solo SI TODO ES ✅
+```
+
+### 📝 **REGLA #7: DOCUMENTACIÓN DE CAMBIOS**
 
 #### **📋 ACTUALIZAR SIEMPRE:**
 ```markdown
@@ -117,6 +169,7 @@ python scripts/reparar_imports.py         # Reparar imports si es necesario
 ✅ documentacion/bitacora/componentes_completados.md    # Si se completó algo
 ✅ documentacion/desarrollo/plan_trabajo.md             # Próximos pasos
 ✅ documentacion/arquitectura/estado_actual_sistema.md  # Si cambió estado
+✅ verificar_mt5_exclusivo.py                          # Verificación MT5 obligatoria
 ```
 
 ### 📁 **REGLA #7: ORGANIZACIÓN DE BITÁCORAS Y ESTRUCTURA DE CARPETAS**

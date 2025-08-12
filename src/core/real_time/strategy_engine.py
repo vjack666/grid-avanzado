@@ -26,11 +26,11 @@ from enum import Enum
 import numpy as np
 
 # Imports del sistema SÓTANO 1 (protocolo centralizado)
-from config_manager import ConfigManager
-from logger_manager import LoggerManager
-from error_manager import ErrorManager
-from data_manager import DataManager
-from analytics_manager import AnalyticsManager
+from ..config_manager import ConfigManager
+from ..logger_manager import LoggerManager
+from ..error_manager import ErrorManager
+from ..data_manager import DataManager
+from ..analytics_manager import AnalyticsManager
 
 class StrategyType(Enum):
     """Tipos de estrategia disponibles"""

@@ -628,13 +628,24 @@ class AdvancedAnalyzer:
             Dict con estado y métricas del analyzer
         """
         try:
+            # Intentar acceder directamente a analyzer_config para capturar cualquier excepción
+            try:
+                config_copy = self.analyzer_config.copy()
+            except Exception as config_error:
+                # Usar el manejo centralizado de errores
+                self.error.handle_system_error(
+                    "ANALYZER_CONFIG_ERROR", 
+                    f"Error accediendo a configuración del analyzer: {config_error}"
+                )
+                return {"error": f"Error en configuración del analyzer: {config_error}"}
+            
             return {
                 "component_id": self.component_id,
                 "version": self.version,
                 "status": self.status,
                 "is_analyzing": self._is_analyzing,
                 "advanced_analytics_available": ADVANCED_ANALYTICS_AVAILABLE,
-                "configuration": self.analyzer_config.copy(),
+                "configuration": config_copy,
                 "metrics": self.analyzer_metrics.copy(),
                 "data_structures": {
                     "correlation_history_size": len(self.correlation_history),
@@ -655,7 +666,11 @@ class AdvancedAnalyzer:
             }
             
         except Exception as e:
-            self.error._log_error(f"Error obteniendo estado del analyzer: {e}")
+            # Usar el manejo centralizado de errores para cualquier otro error
+            self.error.handle_system_error(
+                "ANALYZER_STATUS_ERROR", 
+                f"Error obteniendo estado del analyzer: {e}"
+            )
             return {"error": str(e)}
     
     def get_analysis_summary(self) -> Dict[str, Any]:
