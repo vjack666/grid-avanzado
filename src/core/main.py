@@ -43,6 +43,9 @@ indicator_manager = IndicatorManager(data_manager, logger, error_manager)  # FAS
 mt5_manager = MT5Manager(config, logger, error_manager)  # FASE 6: Gestión centralizada MT5
 analytics_manager = AnalyticsManager(config, logger, error_manager, data_manager)  # SÓTANO 1: Analytics avanzados
 
+# Crear instancia de Console para Rich
+console = Console()
+
 # Variables para compatibilidad hacia atrás
 safe_data_dir = config.get_safe_data_dir()
 LOG_PATH = config.get_log_operaciones_path()

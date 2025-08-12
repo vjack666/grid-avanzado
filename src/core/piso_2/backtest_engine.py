@@ -131,8 +131,19 @@ class HistoricalDataProcessor:
                 return self._data_cache[cache_key]
             
             # Buscar archivo más reciente
-            data_dir = Path(self.config.get_data_dir())
-            csv_files = list(data_dir.glob(f"**/velas_{symbol}_{timeframe}_*.csv"))
+            # Primero intentar en el directorio del proyecto
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+            project_data_dir = os.path.join(project_root, "data")
+            
+            # Buscar en directorio del proyecto primero
+            if os.path.exists(project_data_dir):
+                from pathlib import Path
+                data_dir = Path(project_data_dir)
+                csv_files = list(data_dir.glob(f"**/velas_{symbol}_{timeframe}_*.csv"))
+            else:
+                # Fallback al ConfigManager
+                data_dir = Path(self.config.get_data_dir())
+                csv_files = list(data_dir.glob(f"**/velas_{symbol}_{timeframe}_*.csv"))
             
             if not csv_files:
                 self.error.handle_system_error(
@@ -165,17 +176,7 @@ class HistoricalDataProcessor:
             # Cache de datos
             self._data_cache[cache_key] = df
             
-            self.logger.log_success(
-                f"Datos cargados: {len(df)} registros de {symbol} {timeframe}",
-                extra={
-                    "component": self.component_id,
-                    "symbol": symbol,
-                    "timeframe": timeframe,
-                    "records": len(df),
-                    "start": df.index[0].strftime('%Y-%m-%d %H:%M'),
-                    "end": df.index[-1].strftime('%Y-%m-%d %H:%M')
-                }
-            )
+            self.logger.log_success(f"Datos cargados: {len(df)} registros de {symbol} {timeframe}")
             
             return df
             
@@ -220,10 +221,7 @@ class HistoricalDataProcessor:
             ]
             validation["quality_score"] = sum(quality_factors) / len(quality_factors) * 100
             
-            self.logger.log_info(
-                f"Validación de datos completada - Score: {validation['quality_score']:.1f}%",
-                extra={"component": self.component_id, "validation": validation}
-            )
+            self.logger.log_info(f"Validación de datos completada - Score: {validation['quality_score']:.1f}%")
             
             return validation
             
@@ -294,16 +292,7 @@ class BacktestExecutor:
             
             self.logger.log_success(
                 f"Backtest completado - Trades: {result.total_trades}, "
-                f"Win Rate: {result.win_rate:.1f}%, Net P&L: ${result.net_profit:.2f}",
-                extra={
-                    "component": self.component_id,
-                    "symbol": config.symbol,
-                    "strategy": config.strategy_type,
-                    "trades": result.total_trades,
-                    "win_rate": result.win_rate,
-                    "net_profit": result.net_profit,
-                    "execution_time": result.execution_time
-                }
+                f"Win Rate: {result.win_rate:.1f}%, Net P&L: ${result.net_profit:.2f}"
             )
             
             return result

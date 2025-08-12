@@ -1,1 +1,1 @@
-"""src.analysis package"""\n
+"""src.analysis package"""

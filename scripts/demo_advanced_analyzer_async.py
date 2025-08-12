@@ -101,9 +101,10 @@ class AdvancedAnalyzerDemo:
         # Mostrar resultados
         for i, resultado in enumerate(resultados):
             if not isinstance(resultado, Exception):
-                print(f"  ✅ {instrumentos[i]}: {resultado['status']}")
+                status = resultado.get('status', 'unknown') if isinstance(resultado, dict) else 'completed'
+                print(f"  ✅ {instrumentos[i]}: {status}")
             else:
-                print(f"  ❌ {instrumentos[i]}: Error")
+                print(f"  ❌ {instrumentos[i]}: Error - {str(resultado)}")
         
         print()
         return resultados
@@ -255,14 +256,25 @@ async def main():
         # 2. Demo análisis asíncrono
         print("2️⃣ ANÁLISIS ASÍNCRONO EN TIEMPO REAL")
         summary = await demo.demo_analisis_asincrono()
+        print(f"📊 Análisis completados: {summary.get('total_analyses', 0) if summary else 0}")
         
         # 3. Demo análisis paralelo
         print("3️⃣ ANÁLISIS PARALELO MULTI-INSTRUMENTO")
         resultados = await demo.demo_analisis_paralelo()
+        successful_analyses = len([r for r in resultados if isinstance(r, dict) and r.get('status') == 'completado'])
+        print(f"✅ Análisis exitosos: {successful_analyses}/{len(resultados)}")
         
         # 4. Demo benchmark velocidad
         print("4️⃣ BENCHMARK DE RENDIMIENTO")
         benchmark = await demo.demo_benchmark_velocidad()
+        
+        # Mostrar resumen del benchmark
+        print("📊 RESUMEN DEL BENCHMARK:")
+        print(f"   ⚡ Aceleración: {benchmark['speedup']:.2f}x más rápido")
+        print(f"   🔄 Iteraciones: {benchmark['iterations']}")
+        print(f"   ⏱️ Tiempo asíncrono: {benchmark['async_time']:.3f}s")
+        print(f"   📈 Eficiencia: +{((benchmark['speedup']-1)*100):.1f}%")
+        print()
         
         # 5. Estado final
         print("5️⃣ ESTADO FINAL DEL SISTEMA")
