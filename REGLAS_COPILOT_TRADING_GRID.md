@@ -1,101 +1,98 @@
-# 🤖 **REGLAS PARA COPILOT - TRADING GRID v2.0**
+# 🤖 **REGLAS PARA COPILOT - TRADING GRID COMPLETADO**
 
-**Sistema:** Trading Grid v2.0  
-**Fecha:** Agosto 10, 2025  
-**Propósito:** Reglas específicas para el desarrollo del sistema Trading Grid
+**Sistema:** Trading Grid v4.0 - COMPLETAMENTE OPERATIVO  
+**Fecha:** Agosto 12, 2025  
+**Propósito:** Reglas para mantenimiento y mejoras opcionales del sistema completado  
+**Estado:** ✅ PROYECTO TERMINADO - SISTEMA 100% FUNCIONAL
 
 ---
 
-## 🎯 **REGLAS DE ORO PARA COPILOT**
+## 🎯 **REGLAS DE ORO PARA SISTEMA COMPLETADO**
 
-### 📋 **REGLA #1: REVISAR ANTES DE CREAR**
+### 📋 **REGLA #1: SISTEMA OPERATIVO - NO MODIFICAR CORE**
 ```
-🔍 ANTES DE CREAR NUEVAS FUNCIONES:
-1. ✅ Revisar documentacion/bitacora/ para entender contexto
-2. ✅ Buscar archivos relacionados en src/
-3. ✅ Verificar si ya existe lógica similar  
-4. ❌ NO duplicar funcionalidad existente
-```
-
-### 📚 **REGLA #2: DOCUMENTACIÓN OBLIGATORIA PRE-TRABAJO**
-
-#### **🚨 ARCHIVOS CRÍTICOS - LEER SIEMPRE:**
-```
-📊 DOCUMENTACIÓN OBLIGATORIA:
-✅ documentacion/README.md                               # Orientación general
-✅ documentacion/arquitectura/estado_actual_sistema.md   # Estado actual
-✅ documentacion/bitacora/desarrollo_diario.md          # Última sesión  
-✅ MIGRACION_COMPLETADA.md                              # Estado migración
-✅ PROTOCOLO_TRADING_GRID.md                            # Este protocolo
+🏆 SISTEMA 100% FUNCIONAL:
+✅ 192/192 tests pasando constantemente
+✅ Broker real conectado y validado (FundedNext MT5)
+✅ Órdenes reales ejecutándose correctamente
+✅ Performance <0.5 segundos tiempo real
+❌ NO modificar componentes core sin justificación crítica
 ```
 
-#### **📝 DOCUMENTACIÓN POR ÁREA:**
-```
-🎯 SEGÚN EL ÁREA DE TRABAJO:
-├── 🧠 CORE → Revisar src/core/ y documentacion/
-├── 📊 ANALYSIS → Revisar src/analysis/ y data/
-├── 🛠️ UTILS → Revisar src/utils/ y logs/
-├── ⚙️ CONFIG → Revisar config/ y requirements.txt
-└── 🧪 TESTING → Revisar tests/ y scripts/
-```
+### 📚 **REGLA #2: DOCUMENTACIÓN FINAL CONSOLIDADA**
 
-### 🔧 **REGLA #3: ESTRUCTURA DE PROYECTO OBLIGATORIA**
-
-#### **📁 DIRECTORIOS PRINCIPALES:**
+#### **🚨 ARCHIVOS CRÍTICOS ACTUALES:**
 ```
-grid/                           # Proyecto Trading Grid
-├── src/                        # Código fuente
-│   ├── core/                  # Lógica principal del sistema
-│   │   ├── main.py           # Sistema principal - PUNTO DE ENTRADA
-│   │   ├── riskbot_mt5.py    # Gestión de riesgo y exposición
-│   │   └── order_manager.py  # Gestión de órdenes MT5
-│   ├── analysis/             # Análisis técnico y estrategias
-│   │   ├── grid_bollinger.py # Estrategia Grid con Bollinger Bands
-│   │   └── analisis_estocastico_m15.py # Análisis estocástico M15
-│   └── utils/                # Utilidades y herramientas
-│       ├── data_logger.py    # Sistema de logging
-│       ├── trading_schedule.py # Gestión de horarios de trading
-│       └── descarga_velas.py # Descarga de datos MT5
-├── config/                   # Configuración del sistema
-│   └── config.py            # Configuración global
-├── tests/                    # Suite de testing
-│   └── test_sistema.py      # Tests automatizados
-├── documentacion/            # Documentación del proyecto
-│   ├── arquitectura/        # Arquitectura del sistema
-│   ├── bitacora/           # Bitácoras de desarrollo
-│   ├── desarrollo/         # Logs de desarrollo  
-│   └── templates/          # Templates de trabajo
-├── scripts/                 # Scripts de mantenimiento
-│   ├── reorganizar_sistema.py # Reorganización automática
-│   └── reparar_imports.py  # Reparación de imports
-├── data/                   # Datos de trading (por fechas)
-├── logs/                   # Logs del sistema
-└── backup/                 # Backups automáticos
+📊 DOCUMENTACIÓN ACTUAL:
+✅ documentacion/bitacora/sotano_1/RESUMEN_EJECUTIVO.md      # SÓTANO 1 completado
+✅ documentacion/bitacora/sotano_2/DIA_3_COMPLETADO_FINAL.md # SÓTANO 2 completado
+✅ documentacion/bitacora/sotano_3/01_RESUMEN_EJECUTIVO.md   # SÓTANO 3 completado
+✅ documentacion/bitacora/TEMAS_PENDIENTES.md                # Mejoras opcionales
+✅ PROTOCOLO_TRADING_GRID.md                                 # Este protocolo
+✅ REGLAS_COPILOT_TRADING_GRID.md                           # Estas reglas
 ```
 
-### 🔍 **REGLA #4: BÚSQUEDA OBLIGATORIA**
+### � **REGLA #3: ARQUITECTURA FINAL - NO MODIFICAR SIN NECESIDAD**
 
-#### **🎯 ANTES DE CREAR, BUSCAR EN:**
+#### **📁 ESTRUCTURA COMPLETADA Y OPERATIVA:**
+```
+🏢 TRADING GRID - ARQUITECTURA COMPLETADA:
+
+src/core/                       # NÚCLEO COMPLETADO ✅
+├── config_manager.py          # Configuración centralizada ✅
+├── logger_manager.py          # Logging unificado ✅  
+├── error_manager.py           # Manejo de errores robusto ✅
+├── data_manager.py            # Gestión de datos avanzada ✅
+├── analytics_manager.py       # Analytics completos ✅
+├── indicator_manager.py       # Indicadores técnicos ✅
+├── fundednext_mt5_manager.py  # Conexión broker real ✅
+├── optimization_engine.py     # Motor de optimización ✅
+├── strategy_engine.py         # Generación de señales ✅
+├── real_time_monitor.py       # Monitoreo tiempo real ✅
+├── order_executor.py          # Ejecución de órdenes ✅
+└── foundation_bridge.py       # Enlace estratégico ✅
+
+tests/                          # SUITE COMPLETA ✅
+├── 192 tests pasando          # 100% success rate ✅
+├── Validación real            # Con broker MT5 ✅
+└── Cobertura completa         # Todos los componentes ✅
+
+scripts/                        # HERRAMIENTAS ✅
+└── demo_sistema_completo.py   # Demo end-to-end ✅
+
+documentacion/bitacora/         # DOCUMENTACIÓN FINAL ✅
+├── sotano_1/RESUMEN_EJECUTIVO.md       # SÓTANO 1 ✅
+├── sotano_2/DIA_3_COMPLETADO_FINAL.md  # SÓTANO 2 ✅
+├── sotano_3/01_RESUMEN_EJECUTIVO.md    # SÓTANO 3 ✅
+└── TEMAS_PENDIENTES.md                 # Mejoras opcionales ✅
+```
+
+### 🔍 **REGLA #4: MANTENIMIENTO, NO DESARROLLO**
+
+#### **🎯 ENFOQUE EN MANTENIMIENTO:**
 ```bash
-# ✅ BÚSQUEDA EN CÓDIGO:
-grep -r "función_similar" src/                          # Buscar función
-find . -name "*.py" -exec grep -l "concepto" {} \;     # Buscar concepto
-grep -r "import.*módulo" src/                          # Buscar imports
+# ✅ ACTIVIDADES PERMITIDAS:
+✅ Monitoreo de performance del sistema
+✅ Verificación de conexión con broker  
+✅ Ejecución de tests de validación
+✅ Implementación de mejoras opcionales (según TEMAS_PENDIENTES.md)
+✅ Optimización de performance existente
 
-# ✅ BÚSQUEDA EN DOCUMENTACIÓN:  
-grep -r "tema" documentacion/                          # Buscar tema
-type documentacion\bitacora\desarrollo_diario.md      # Ver última sesión
+# ❌ ACTIVIDADES RESTRINGIDAS:
+❌ Modificación de arquitectura core sin justificación crítica
+❌ Cambios en componentes validados con broker real
+❌ Eliminación de tests que están pasando
+❌ Modificación de conexión FundedNextMT5Manager funcional
 ```
 
-### 🧪 **REGLA #5: TESTING CRÍTICO**
+### 🧪 **REGLA #5: VALIDACIÓN CONTINUA**
 
-#### **🔧 VALIDACIONES OBLIGATORIAS:**
+#### **🔧 VALIDACIONES DE MANTENIMIENTO:**
 ```bash
-# ✅ TESTS QUE SIEMPRE DEBEN PASAR:
-python tests/test_sistema.py              # Suite completa (debe ser 168/168)
-python src/core/main.py                   # Sistema debe arrancar sin errores
-python scripts/reparar_imports.py         # Reparar imports si es necesario
-python verificar_mt5_exclusivo.py         # Verificar terminal MT5 exclusivo
+# ✅ TESTS DE MANTENIMIENTO DIARIO:
+python scripts/demo_sistema_completo.py    # Demo completo end-to-end
+python -m pytest tests/ -v                 # Suite completa (debe ser 192/192)
+python tests/test_fundednext_mt5_manager_real.py  # Conexión broker real
 ```
 
 #### **🚨 REGLA CRÍTICA MT5: TERMINAL EXCLUSIVO OBLIGATORIO**
