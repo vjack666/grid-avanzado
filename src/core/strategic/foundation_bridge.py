@@ -142,7 +142,7 @@ class FoundationBridge:
         
         # Inicializar indicator manager
         try:
-            self.indicator_manager = IndicatorManager()
+            self.indicator_manager = IndicatorManager(self.data_manager, logger_manager, self.error_manager)
         except Exception as e:
             self.logger.warning(f"No se pudo inicializar IndicatorManager: {e}")
             self.indicator_manager = None

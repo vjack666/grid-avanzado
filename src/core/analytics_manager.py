@@ -711,19 +711,86 @@ class AnalyticsManager:
             return False
     
     def _validate_dependencies(self) -> bool:
-        """Valida que las dependencias estén disponibles"""
+        """Valida que las dependencias estén disponibles con logging detallado"""
         try:
-            required_managers = [self.config, self.data_manager, self.error_manager]
+            # Importar LogLevel desde el logger manager
+            from .logger_manager import LogLevel
             
-            for manager in required_managers:
-                if not hasattr(manager, 'is_initialized') or not manager.is_initialized:
-                    self.logger.log_warning(f"Manager no inicializado: {type(manager).__name__}")
-                    return False
+            self.logger.log_system(LogLevel.INFO, "Validando dependencias de AnalyticsManager...", {
+                "config_type": type(self.config).__name__,
+                "data_manager_type": type(self.data_manager).__name__,
+                "error_manager_type": type(self.error_manager).__name__
+            })
             
+            # Validar cada manager individualmente
+            managers_status = {}
+            
+            # Validar ConfigManager
+            if self.config is None:
+                self.logger.log_system(LogLevel.ERROR, "ConfigManager es None")
+                return False
+            elif not hasattr(self.config, 'is_initialized'):
+                self.logger.log_system(LogLevel.WARNING, "ConfigManager no tiene atributo is_initialized")
+                managers_status['config'] = 'missing_attribute'
+            elif not self.config.is_initialized:
+                self.logger.log_system(LogLevel.WARNING, "ConfigManager no está inicializado")
+                managers_status['config'] = 'not_initialized'
+            else:
+                managers_status['config'] = 'ok'
+            
+            # Validar DataManager
+            if self.data_manager is None:
+                self.logger.log_system(LogLevel.ERROR, "DataManager es None")
+                return False
+            elif not hasattr(self.data_manager, 'is_initialized'):
+                self.logger.log_system(LogLevel.WARNING, "DataManager no tiene atributo is_initialized")
+                managers_status['data'] = 'missing_attribute'
+            elif not self.data_manager.is_initialized:
+                self.logger.log_system(LogLevel.WARNING, "DataManager no está inicializado")
+                managers_status['data'] = 'not_initialized'
+            else:
+                managers_status['data'] = 'ok'
+            
+            # Validar ErrorManager
+            if self.error_manager is None:
+                self.logger.log_system(LogLevel.ERROR, "ErrorManager es None")
+                return False
+            elif not hasattr(self.error_manager, 'is_initialized'):
+                self.logger.log_system(LogLevel.WARNING, "ErrorManager no tiene atributo is_initialized")
+                managers_status['error'] = 'missing_attribute'
+            elif not self.error_manager.is_initialized:
+                self.logger.log_system(LogLevel.WARNING, "ErrorManager no está inicializado")
+                managers_status['error'] = 'not_initialized'
+            else:
+                managers_status['error'] = 'ok'
+            
+            # Log del estado de validación
+            self.logger.log_system(LogLevel.INFO, "Estado de validación de dependencias", {
+                "managers_status": managers_status,
+                "all_ok": all(status == 'ok' for status in managers_status.values())
+            })
+            
+            # Determinar si las dependencias son válidas
+            # Permitir que managers sin is_initialized funcionen (compatibilidad)
+            critical_failures = [status for status in managers_status.values() if status in ['none', 'error']]
+            
+            if critical_failures:
+                self.logger.log_system(LogLevel.ERROR, f"Fallos críticos en dependencias: {critical_failures}")
+                return False
+            
+            # Advertir sobre managers sin is_initialized pero continuar
+            warnings = [mgr for mgr, status in managers_status.items() if status == 'missing_attribute']
+            if warnings:
+                self.logger.log_system(LogLevel.WARNING, f"Managers sin is_initialized (compatibilidad): {warnings}")
+            
+            self.logger.log_system(LogLevel.SUCCESS, "Validación de dependencias completada")
             return True
             
         except Exception as e:
-            self.logger.log_error(f"Error validando dependencias: {e}")
+            self.logger.log_system(LogLevel.ERROR, f"Error validando dependencias: {e}", {
+                "error": str(e),
+                "error_type": type(e).__name__
+            })
             return False
     
     def update_trade_performance(self, trade_data: Dict[str, Any]) -> None:

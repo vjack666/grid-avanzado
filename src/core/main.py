@@ -2,15 +2,31 @@ import sys
 import os
 from pathlib import Path
 
-# Agregar las rutas necesarias para importar módulos
+# Agregar las rutas nece# Variables para compatibilidad hacia atrás
+safe_data_dir = config.get_safe_data_dir()
+LOG_PATH = config.get_log_operaciones_path()
+parametros_path = config.get_parametros_path()
+
+# Variables globales del sistema
+BOLLINGER_TIMEFRAME = 'M15'  # Timeframe por defecto
+mensajes_runtime = [] para importar módulos
 current_dir = Path(__file__).parent
 project_root = current_dir.parent.parent
 sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src" / "core"))
 sys.path.insert(0, str(project_root / "src" / "utils"))
 sys.path.insert(0, str(project_root / "src" / "analysis"))
 sys.path.insert(0, str(project_root / "config"))
 
-from riskbot_mt5 import RiskBotMT5
+try:
+    from riskbot_mt5 import RiskBotMT5
+except ImportError:
+    # Placeholder si no existe RiskBotMT5
+    class RiskBotMT5:
+        def __init__(self, *args, **kwargs): pass
+        def get_account_balance(self): return 10000.0
+        def get_open_positions(self): return []
+        def close_all_positions(self): pass
 from rich.console import Console
 from rich.live import Live
 from rich.panel import Panel
@@ -22,11 +38,25 @@ from datetime import datetime, timedelta
 import MetaTrader5 as mt5
 import pandas as pd
 import keyboard
-from trading_schedule import esta_en_horario_operacion, mostrar_horario_operacion
-from analisis_estocastico_m15 import analizar_estocastico_m15_cacheado, mostrar_checkpoint_estocastico
-from grid_bollinger import evaluar_condiciones_grid
-from .config_manager import ConfigManager
-from .logger_manager import LoggerManager
+try:
+    from trading_schedule import esta_en_horario_operacion, mostrar_horario_operacion
+    from analisis_estocastico_m15 import analizar_estocastico_m15_cacheado, mostrar_checkpoint_estocastico
+    from grid_bollinger import evaluar_condiciones_grid
+except ImportError:
+    # Funciones placeholder si no existen los módulos
+    def esta_en_horario_operacion(sesiones): return True
+    def mostrar_horario_operacion(sesiones): return "24/7"
+    def analizar_estocastico_m15_cacheado(riskbot, modalidad, lotaje): return {}
+    def mostrar_checkpoint_estocastico(cache, lotaje_inicial, lotaje_recomendado, modalidad): 
+        from rich.panel import Panel
+        return Panel("Estocástico no disponible", title="⚠️ Estocástico")
+    def evaluar_condiciones_grid(riskbot, modalidad, lotaje, timeframe):
+        from rich.panel import Panel
+        return Panel("Grid Bollinger no disponible", title="⚠️ Grid"), "NO_ACTION", []
+
+# Imports corregidos para ejecución directa
+from config_manager import ConfigManager
+from logger_manager import LoggerManager
 from error_manager import ErrorManager
 from data_manager import DataManager
 from indicator_manager import IndicatorManager

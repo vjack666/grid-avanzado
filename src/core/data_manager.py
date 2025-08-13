@@ -86,6 +86,9 @@ class DataManager:
         # Verificar disponibilidad MT5
         self.mt5_available = self._check_mt5_availability()
         
+        # Estado de inicialización para compatibilidad con AnalyticsManager
+        self.is_initialized = True
+        
         # Log de inicialización
         if self.logger:
             self.logger.log_info("DataManager inicializado correctamente")

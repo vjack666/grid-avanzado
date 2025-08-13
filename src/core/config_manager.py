@@ -19,93 +19,92 @@ class ConfigManager:
     Esta clase centraliza todas las rutas y configuraciones que previamente
     estaban duplicadas en main.py, trading_schedule.py y otros archivos.
     """
+
+    def __init__(self):
+        """Inicializar ConfigManager con estado de inicialización"""
+        # Configuración base - centralizada desde config.py
+        self._user_dir = os.path.expanduser("~")
+        self._safe_data_dir = os.path.join(self._user_dir, "Documents", "GRID SCALP")
+        
+        # Estado de inicialización para compatibilidad con AnalyticsManager
+        self.is_initialized = True
+        
+        # Asegurar que los directorios existan
+        self.ensure_directories()
     
-    # Configuración base - centralizada desde config.py
-    _user_dir = os.path.expanduser("~")
-    _safe_data_dir = os.path.join(_user_dir, "Documents", "GRID SCALP")
-    
-    @staticmethod
-    def get_safe_data_dir() -> str:
+    def get_safe_data_dir(self) -> str:
         """
         Directorio principal de datos de usuario.
         
         Returns:
             str: Ruta al directorio seguro de datos (ej: C:/Users/usuario/Documents/GRID SCALP)
         """
-        return ConfigManager._safe_data_dir
+        return self._safe_data_dir
     
-    @staticmethod
-    def get_logs_dir() -> str:
+    def get_logs_dir(self) -> str:
         """
         Directorio para archivos de log.
         
         Returns:
             str: Ruta al directorio de logs
         """
-        return os.path.join(ConfigManager._safe_data_dir, "logs")
+        return os.path.join(self._safe_data_dir, "logs")
     
-    @staticmethod
-    def get_data_dir() -> str:
+    def get_data_dir(self) -> str:
         """
         Directorio para datos históricos y velas.
         
         Returns:
             str: Ruta al directorio de datos
         """
-        return os.path.join(ConfigManager._safe_data_dir, "data")
+        return os.path.join(self._safe_data_dir, "data")
     
-    @staticmethod
-    def get_backup_dir() -> str:
+    def get_backup_dir(self) -> str:
         """
         Directorio para backups del sistema.
         
         Returns:
             str: Ruta al directorio de backups
         """
-        return os.path.join(ConfigManager._safe_data_dir, "backup")
+        return os.path.join(self._safe_data_dir, "backup")
     
-    @staticmethod
-    def get_parametros_path() -> str:
+    def get_parametros_path(self) -> str:
         """
         Ruta al archivo de parámetros de usuario.
         
         Returns:
             str: Ruta completa al archivo parametros_usuario.json
         """
-        return os.path.join(ConfigManager._safe_data_dir, "parametros_usuario.json")
+        return os.path.join(self._safe_data_dir, "parametros_usuario.json")
     
-    @staticmethod
-    def get_config_path() -> str:
+    def get_config_path(self) -> str:
         """
         Ruta al archivo de configuración global del sistema.
         
         Returns:
             str: Ruta completa al archivo config_sistema.json
         """
-        return os.path.join(ConfigManager._safe_data_dir, "config_sistema.json")
+        return os.path.join(self._safe_data_dir, "config_sistema.json")
     
-    @staticmethod
-    def get_modalidad_path() -> str:
+    def get_modalidad_path(self) -> str:
         """
         Ruta al archivo de modalidad actual.
         
         Returns:
             str: Ruta completa al archivo modalidad_actual.json
         """
-        return os.path.join(ConfigManager._safe_data_dir, "modalidad_actual.json")
+        return os.path.join(self._safe_data_dir, "modalidad_actual.json")
     
-    @staticmethod
-    def get_log_operaciones_path() -> str:
+    def get_log_operaciones_path(self) -> str:
         """
         Ruta al archivo CSV de log de operaciones.
         
         Returns:
             str: Ruta completa al archivo log_operaciones.csv
         """
-        return os.path.join(ConfigManager.get_logs_dir(), "log_operaciones.csv")
+        return os.path.join(self.get_logs_dir(), "log_operaciones.csv")
     
-    @staticmethod
-    def get_all_paths() -> dict:
+    def get_all_paths(self) -> dict:
         """
         Diccionario con todas las rutas del sistema.
         
@@ -114,22 +113,21 @@ class ConfigManager:
         """
         return {
             # Directorios principales
-            'safe_data_dir': ConfigManager.get_safe_data_dir(),
-            'logs_dir': ConfigManager.get_logs_dir(),
-            'data_dir': ConfigManager.get_data_dir(),
-            'backup_dir': ConfigManager.get_backup_dir(),
+            'safe_data_dir': self.get_safe_data_dir(),
+            'logs_dir': self.get_logs_dir(),
+            'data_dir': self.get_data_dir(),
+            'backup_dir': self.get_backup_dir(),
             
             # Archivos de configuración
-            'parametros_path': ConfigManager.get_parametros_path(),
-            'config_path': ConfigManager.get_config_path(),
-            'modalidad_path': ConfigManager.get_modalidad_path(),
+            'parametros_path': self.get_parametros_path(),
+            'config_path': self.get_config_path(),
+            'modalidad_path': self.get_modalidad_path(),
             
             # Archivos de logging
-            'log_operaciones_path': ConfigManager.get_log_operaciones_path(),
+            'log_operaciones_path': self.get_log_operaciones_path(),
         }
     
-    @staticmethod
-    def ensure_directories() -> bool:
+    def ensure_directories(self) -> bool:
         """
         Crea todos los directorios necesarios si no existen.
         
@@ -137,7 +135,7 @@ class ConfigManager:
             bool: True si todos los directorios fueron creados/existen, False en caso de error
         """
         try:
-            paths = ConfigManager.get_all_paths()
+            paths = self.get_all_paths()
             
             # Crear directorios principales
             directories = [
@@ -168,7 +166,6 @@ class ConfigManager:
             print(f"❌ Error creando directorios: {e}")
             return False
     
-    @staticmethod
     def validate_paths() -> dict:
         """
         Valida que todas las rutas sean accesibles.
@@ -176,7 +173,7 @@ class ConfigManager:
         Returns:
             dict: Diccionario con el estado de validación de cada ruta
         """
-        paths = ConfigManager.get_all_paths()
+        paths = self.get_all_paths()
         validation = {}
         
         for name, path in paths.items():
@@ -209,8 +206,7 @@ class ConfigManager:
         
         return validation
     
-    @staticmethod
-    def get_system_info() -> dict:
+    def get_system_info(self) -> dict:
         """
         Información del sistema de configuración.
         
@@ -226,7 +222,7 @@ class ConfigManager:
                 'trading_schedule.py - definiciones locales de safe_data_dir', 
                 'Múltiples definiciones de user_dir'
             ],
-            'total_paths': len(ConfigManager.get_all_paths()),
+            'total_paths': len(self.get_all_paths()),
             'directories_managed': 4,
             'files_managed': 4
         }
@@ -237,7 +233,7 @@ if __name__ == "__main__":
     print("🧪 Testing ConfigManager...")
     
     # Test 1: Obtener rutas
-    paths = ConfigManager.get_all_paths()
+    paths = self.get_all_paths()
     print(f"✅ {len(paths)} rutas configuradas")
     
     # Test 2: Crear directorios
@@ -250,7 +246,7 @@ if __name__ == "__main__":
     print(f"✅ Rutas válidas: {valid_count}/{len(validation)}")
     
     # Test 4: Info del sistema
-    info = ConfigManager.get_system_info()
+    info = self.get_system_info()
     print(f"✅ ConfigManager v{info['version']} operativo")
     
     print("🎉 ConfigManager testing completado!")

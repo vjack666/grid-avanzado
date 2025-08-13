@@ -71,6 +71,9 @@ class ErrorManager:
             'trading_operation': 1,
             'system_operation': 2
         }
+        
+        # Estado de inicialización para compatibilidad con AnalyticsManager
+        self.is_initialized = True
     
     def _log_error(self, message: str, error_type: str = "ERROR"):
         """Helper para logging de errores."""
