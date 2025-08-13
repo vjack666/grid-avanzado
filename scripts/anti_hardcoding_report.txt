@@ -1,0 +1,147 @@
+
+🚨 REPORTE ANTI-HARDCODING - TRADING GRID SYSTEM
+===============================================
+
+📊 RESUMEN:
+- Total de archivos analizados: 24
+- Valores hardcodeados encontrados: 81
+
+📋 VALORES HARDCODEADOS DETECTADOS:
+
+📄 anti_hardcoding_analyzer.py:
+   Línea 31: 'EURUSD' - Símbolo hardcodeado
+   Línea 94: 'EURUSD' - Símbolo hardcodeado
+   Línea 95: 'EURUSD' - Símbolo hardcodeado
+   Línea 109: 'EURUSD' - Símbolo hardcodeado
+   Línea 32: "EURUSD" - Símbolo hardcodeado
+   Línea 33: 'GBPUSD' - Símbolo hardcodeado
+   Línea 34: "GBPUSD" - Símbolo hardcodeado
+   Línea 35: 'H1' - Timeframe hardcodeado
+   Línea 96: 'H1' - Timeframe hardcodeado
+   Línea 97: 'H1' - Timeframe hardcodeado
+   Línea 110: 'H1' - Timeframe hardcodeado
+   Línea 36: "H1" - Timeframe hardcodeado
+   Línea 37: 'M5' - Timeframe hardcodeado
+   Línea 96: 'M5' - Timeframe hardcodeado
+   Línea 38: "M5" - Timeframe hardcodeado
+   Línea 39: 'M15' - Timeframe hardcodeado
+   Línea 96: 'M15' - Timeframe hardcodeado
+   Línea 40: "M15" - Timeframe hardcodeado
+   Línea 41: 'LONDON' - Sesión hardcodeada
+   Línea 98: 'LONDON' - Sesión hardcodeada
+   Línea 111: 'LONDON' - Sesión hardcodeada
+   Línea 42: "LONDON" - Sesión hardcodeada
+   Línea 43: 'NEUTRAL' - Tendencia hardcodeada
+   Línea 104: 'NEUTRAL' - Tendencia hardcodeada
+   Línea 44: "NEUTRAL" - Tendencia hardcodeada
+
+📄 demo_caja_negra.py:
+   Línea 52: "EURUSD" - Símbolo hardcodeado
+   Línea 64: "EURUSD" - Símbolo hardcodeado
+   Línea 67: "EURUSD" - Símbolo hardcodeado
+   Línea 78: "EURUSD" - Símbolo hardcodeado
+   Línea 89: "EURUSD" - Símbolo hardcodeado
+   Línea 53: "H1" - Timeframe hardcodeado
+   Línea 63: "H1" - Timeframe hardcodeado
+   Línea 68: "H1" - Timeframe hardcodeado
+   Línea 63: "M5" - Timeframe hardcodeado
+   Línea 63: "M15" - Timeframe hardcodeado
+   Línea 70: 1.0950 - Precio hardcodeado
+
+📄 demo_confluence_analyzer.py:
+   Línea 31: "H1" - Timeframe hardcodeado
+   Línea 31: "M5" - Timeframe hardcodeado
+   Línea 31: "M15" - Timeframe hardcodeado
+
+📄 demo_enhanced_order_final.py:
+   Línea 47: 'EURUSD' - Símbolo hardcodeado
+   Línea 49: 'EURUSD' - Símbolo hardcodeado
+   Línea 74: 'EURUSD' - Símbolo hardcodeado
+   Línea 74: 'GBPUSD' - Símbolo hardcodeado
+   Línea 60: 'H1' - Timeframe hardcodeado
+   Línea 60: 'M15' - Timeframe hardcodeado
+   Línea 49: 1.0950 - Precio hardcodeado
+   Línea 49: 1.2700 - Precio hardcodeado
+
+📄 demo_fvg_quality_analyzer.py:
+   Línea 63: 'EURUSD' - Símbolo hardcodeado
+   Línea 64: 'M15' - Timeframe hardcodeado
+
+📄 demo_sistema_completo.py:
+   Línea 176: "EURUSD" - Símbolo hardcodeado
+   Línea 228: "EURUSD" - Símbolo hardcodeado
+   Línea 175: "M15" - Timeframe hardcodeado
+
+📄 demo_sistema_fvg_ml_completo.py:
+   Línea 175: 'EURUSD' - Símbolo hardcodeado
+   Línea 242: 'EURUSD' - Símbolo hardcodeado
+   Línea 170: 'H1' - Timeframe hardcodeado
+
+📄 demo_strategy_engine.py:
+   Línea 23: 'EURUSD' - Símbolo hardcodeado
+   Línea 23: 'GBPUSD' - Símbolo hardcodeado
+   Línea 22: 'H1' - Timeframe hardcodeado
+   Línea 22: 'M15' - Timeframe hardcodeado
+
+📄 descarga_velas.py:
+   Línea 29: 'EURUSD' - Símbolo hardcodeado
+   Línea 221: 'EURUSD' - Símbolo hardcodeado
+   Línea 114: 'H1' - Timeframe hardcodeado
+   Línea 224: 'H1' - Timeframe hardcodeado
+   Línea 116: 'M5' - Timeframe hardcodeado
+   Línea 226: 'M5' - Timeframe hardcodeado
+   Línea 115: 'M15' - Timeframe hardcodeado
+   Línea 225: 'M15' - Timeframe hardcodeado
+
+📄 test_enhanced_order_system.py:
+   Línea 38: 'EURUSD' - Símbolo hardcodeado
+   Línea 88: 'EURUSD' - Símbolo hardcodeado
+   Línea 195: 'EURUSD' - Símbolo hardcodeado
+   Línea 39: 'H1' - Timeframe hardcodeado
+   Línea 89: 'H1' - Timeframe hardcodeado
+   Línea 196: 'H1' - Timeframe hardcodeado
+   Línea 53: 'LONDON' - Sesión hardcodeada
+   Línea 41: 1.0950 - Precio hardcodeado
+   Línea 91: 1.0950 - Precio hardcodeado
+
+📄 test_simple_enhanced_order.py:
+   Línea 27: 'EURUSD' - Símbolo hardcodeado
+   Línea 65: 'EURUSD' - Símbolo hardcodeado
+   Línea 28: 'H1' - Timeframe hardcodeado
+   Línea 66: 'H1' - Timeframe hardcodeado
+   Línea 68: 1.0950 - Precio hardcodeado
+
+============================================================
+
+# === CONFIGURACIÓN DINÁMICA - ANTI-HARDCODING ===
+# Agregar al inicio de archivos que necesiten configuración:
+
+from src.core.config_manager import ConfigManager
+
+# Inicializar configuración
+config = ConfigManager()
+
+# Obtener valores dinámicos:
+symbols = config.get_symbols()                    # En lugar de ['EURUSD']
+primary_symbol = config.get_primary_symbol()     # En lugar de 'EURUSD'
+timeframes = config.get_timeframes()             # En lugar de ['M5', 'M15', 'H1']
+default_timeframe = config.get_default_timeframe() # En lugar de 'H1'
+current_session = config.get_current_session()   # En lugar de 'LONDON'
+fvg_config = config.get_fvg_config()            # Configuración FVG completa
+alerts_config = config.get_alerts_config()      # Configuración de alertas
+
+# Detectar tendencia dinámicamente:
+trend_value = 0.5  # Desde análisis real
+market_trend = config.detect_market_trend(trend_value)  # En lugar de 'NEUTRAL'
+
+# === EJEMPLOS DE REEMPLAZO ===
+
+# ANTES (hardcodeado):
+# symbol = 'EURUSD'
+# timeframe = 'H1'
+# session = 'LONDON'
+
+# DESPUÉS (dinámico):
+# symbol = config.get_primary_symbol()
+# timeframe = config.get_default_timeframe()
+# session = config.get_current_session()

@@ -37,7 +37,7 @@ from src.core.config_manager import ConfigManager
 from src.core.logger_manager import LoggerManager
 from src.core.error_manager import ErrorManager
 from src.core.mt5_manager import MT5Manager
-from src.core.real_time.fundednext_mt5_manager import FundedNextMT5Manager
+from src.core.fundednext_mt5_manager import FundedNextMT5Manager
 
 # Import del StrategyEngine para TradingSignal
 try:

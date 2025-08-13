@@ -11,6 +11,9 @@ Protocolo: TRADING GRID v2.0
 """
 
 import os
+import json
+from typing import Dict, Any, List, Optional
+from pathlib import Path
 
 class ConfigManager:
     """
@@ -165,6 +168,161 @@ class ConfigManager:
         except Exception as e:
             print(f"❌ Error creando directorios: {e}")
             return False
+    
+    def get_trading_config(self) -> Dict[str, Any]:
+        """
+        Carga la configuración completa desde trading_config.json
+        
+        Returns:
+            dict: Configuración completa del sistema
+        """
+        try:
+            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+                                     "config", "trading_config.json")
+            
+            if os.path.exists(config_path):
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            else:
+                # Configuración por defecto si no existe el archivo
+                return self._get_default_config()
+                
+        except Exception as e:
+            print(f"❌ Error cargando configuración: {e}")
+            return self._get_default_config()
+    
+    def get_symbols(self) -> List[str]:
+        """Obtiene la lista de símbolos desde configuración"""
+        config = self.get_trading_config()
+        return config.get('trading', {}).get('default_symbols', ['EURUSD'])
+    
+    def get_primary_symbol(self) -> str:
+        """Obtiene el símbolo principal desde configuración"""
+        config = self.get_trading_config()
+        return config.get('trading', {}).get('primary_symbol', 'EURUSD')
+    
+    def get_timeframes(self) -> List[str]:
+        """Obtiene la lista de timeframes desde configuración"""
+        config = self.get_trading_config()
+        return config.get('trading', {}).get('timeframes', ['M5', 'M15', 'H1'])
+    
+    def get_default_timeframe(self) -> str:
+        """Obtiene el timeframe por defecto desde configuración"""
+        config = self.get_trading_config()
+        return config.get('trading', {}).get('default_timeframe', 'H1')
+    
+    def get_fvg_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración FVG completa"""
+        config = self.get_trading_config()
+        return config.get('fvg', {})
+    
+    def get_order_execution_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración de ejecución de órdenes"""
+        config = self.get_trading_config()
+        return config.get('order_execution', {})
+    
+    def get_alerts_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración de alertas"""
+        config = self.get_trading_config()
+        return config.get('alerts', {})
+    
+    def get_system_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración del sistema"""
+        config = self.get_trading_config()
+        return config.get('system', {})
+    
+    def get_sessions_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración de sesiones de mercado"""
+        config = self.get_trading_config()
+        return config.get('sessions', {})
+    
+    def get_current_session(self) -> str:
+        """
+        Detecta la sesión actual basada en la hora UTC
+        
+        Returns:
+            str: Nombre de la sesión actual
+        """
+        from datetime import datetime
+        
+        now = datetime.utcnow()
+        current_hour = now.hour
+        
+        sessions = self.get_sessions_config()
+        
+        for session_name, session_info in sessions.items():
+            start_hour = int(session_info['start'].split(':')[0])
+            end_hour = int(session_info['end'].split(':')[0])
+            
+            if start_hour <= end_hour:
+                # Sesión normal (no cruza medianoche)
+                if start_hour <= current_hour < end_hour:
+                    return session_name.upper()
+            else:
+                # Sesión que cruza medianoche
+                if current_hour >= start_hour or current_hour < end_hour:
+                    return session_name.upper()
+        
+        return 'UNKNOWN'
+    
+    def get_market_trend_config(self) -> Dict[str, Any]:
+        """Obtiene la configuración de tendencias de mercado"""
+        config = self.get_trading_config()
+        return config.get('market_trends', {})
+    
+    def detect_market_trend(self, trend_value: float) -> str:
+        """
+        Detecta la tendencia del mercado basada en un valor numérico
+        
+        Args:
+            trend_value: Valor numérico de tendencia (-1.0 a 1.0)
+            
+        Returns:
+            str: 'BULLISH', 'BEARISH', o 'NEUTRAL'
+        """
+        trend_config = self.get_market_trend_config()
+        
+        bullish_threshold = trend_config.get('bullish_threshold', 0.7)
+        bearish_threshold = trend_config.get('bearish_threshold', -0.7)
+        
+        if trend_value >= bullish_threshold:
+            return 'BULLISH'
+        elif trend_value <= bearish_threshold:
+            return 'BEARISH'
+        else:
+            return 'NEUTRAL'
+    
+    def is_environment_production(self) -> bool:
+        """Verifica si el sistema está en modo producción"""
+        config = self.get_system_config()
+        return config.get('environment', 'development') == 'production'
+    
+    def is_debug_mode(self) -> bool:
+        """Verifica si el modo debug está activado"""
+        config = self.get_system_config()
+        return config.get('debug_mode', True)
+    
+    def _get_default_config(self) -> Dict[str, Any]:
+        """Configuración por defecto si no se encuentra el archivo JSON"""
+        return {
+            'trading': {
+                'default_symbols': ['EURUSD'],
+                'primary_symbol': 'EURUSD',
+                'timeframes': ['M5', 'M15', 'H1'],
+                'default_timeframe': 'H1'
+            },
+            'system': {
+                'environment': 'development',
+                'debug_mode': True,
+                'version': '2.0.0'
+            },
+            'fvg': {
+                'detection': {
+                    'min_gap_size': 0.0001,
+                    'max_gap_size': 0.005
+                }
+            }
+        }
     
     def validate_paths() -> dict:
         """

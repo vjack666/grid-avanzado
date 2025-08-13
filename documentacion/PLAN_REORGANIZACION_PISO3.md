@@ -1,100 +1,114 @@
-# 🗂️ PLAN DE REORGANIZACIÓN - ARCHIVOS REALES PISO 3
+# 🗂️ PLAN DE TRABAJO PISO 3 - ACTUALIZADO POST CAJA NEGRA
 
-## 🎯 OBJETIVO: Consolidar archivos que trabajarán definitivamente en REAL
+## 🎯 OBJETIVO: Sistema FVG completo y operativo
 
-### 📊 MOVIMIENTOS NECESARIOS:
+### 📊 ESTADO ACTUAL POST CAJA NEGRA:
 
-#### 1. 🔍 **DETECCIÓN (YA ORGANIZADOS) ✅**
+#### 1. �️ **SISTEMA BASE - COMPLETADO** ✅
+```
+Sistema Trading Grid v5.0:
+├── Sótano 1: 100% operativo ✅
+├── Sótano 2: 100% operativo ✅
+├── Sótano 3: 25% operativo (FoundationBridge) ✅
+├── Caja Negra: 100% forense operativa ✅
+└── Auto-instalación: 100% validada ✅
+```
+
+#### 2. 🔍 **PISO 3 - DETECCIÓN COMPLETADA** ✅
 ```
 src/analysis/piso_3/deteccion/
-├── __init__.py ✅ (ConfluenceAnalyzer - REAL VALIDADO)
-├── fvg_detector.py ← MOVER desde src/analysis/
-├── multi_timeframe_detector.py ← MOVER desde src/analysis/
-└── fvg_alert_system.py ← MOVER desde src/analysis/
+├── __init__.py ✅ (ConfluenceAnalyzer - 3,091 FVGs procesados)
+├── fvg_detector.py ✅ (Funcionando)
+├── multi_timeframe_detector.py ✅ (153 FVGs detectados)
+└── fvg_alert_system.py ✅ (41 alertas generadas)
 ```
 
-#### 2. 📊 **ANÁLISIS (VALIDAR Y LIMPIAR)**
+### 🎯 PRIORIDADES INMEDIATAS:
+
+#### 1. 📊 **OFICINA ANÁLISIS - ACCIÓN INMEDIATA**
 ```
-src/analysis/piso_3/analisis/
-├── __init__.py (FVGQualityAnalyzer) ← VALIDAR CON DEMO
-├── fvg_predictor.py ← EXTRAER de __init__.py
-├── session_analyzer.py ← EXTRAER de __init__.py
-└── market_regime_detector.py ← EXTRAER de __init__.py
+Crear AHORA:
+├── scripts/demo_fvg_quality_analyzer.py ← URGENTE
+├── Validar scoring con datos EURUSD ← HOY
+├── Integrar con ConfluenceAnalyzer ← MAÑANA
+└── Documentar resultados ← MAÑANA
 ```
 
-#### 3. 🤖 **IA (MODULARIZAR)**
+#### 2. 🤖 **OFICINA IA - FUNDACIÓN ML**
 ```
-src/analysis/piso_3/ia/
-├── __init__.py ← LIMPIAR
-├── ml_predictor.py ← CREAR ESPECÍFICO
-├── pattern_recognizer.py ← CREAR ESPECÍFICO
-└── auto_optimizer.py ← CREAR ESPECÍFICO
-```
-
-#### 4. 💰 **TRADING (REAL)**
-```
-src/analysis/piso_3/trading/
-├── __init__.py ← VALIDAR
-├── signal_generator.py ← EXTRAER
-├── risk_manager.py ← EXTRAER
-└── live_trader.py ← EXTRAER
+Implementar próximamente:
+├── src/analysis/piso_3/ia/ml_predictor.py ← ESTA SEMANA
+├── Entrenar con 3,091 FVGs reales ← ESTA SEMANA
+├── Validar predicciones de llenado ← PRÓXIMA SEMANA
+└── Métricas de precisión ← PRÓXIMA SEMANA
 ```
 
-#### 5. 🔗 **INTEGRACIÓN (DASHBOARD)**
+#### 3. 💰 **OFICINA TRADING - SEÑALES REALES**
 ```
-src/analysis/piso_3/integracion/
-├── __init__.py ← LIMPIAR
-├── dashboard.py ← EXTRAER
-├── live_monitor.py ← EXTRAER
-└── data_integrator.py ← EXTRAER
-```
-
-### 🧹 LIMPIEZA NECESARIA:
-
-#### ❌ **ARCHIVOS A DEPRECAR:**
-```
-src/analysis/ (mantener solo archivos heredados necesarios)
-├── analisis_estocastico_m15.py ← EVALUAR SI ES NECESARIO
-├── grid_bollinger.py ← EVALUAR SI ES NECESARIO
-└── __init__.py ← MANTENER PARA COMPATIBILIDAD
+Desarrollar después:
+├── src/analysis/piso_3/trading/signal_generator.py ← 2 SEMANAS
+├── Integración con OrderExecutor ← 2 SEMANAS
+├── RiskManager específico FVG ← 3 SEMANAS
+└── BacktestEngine FVG ← 3 SEMANAS
 ```
 
-### 🎯 RESULTADO FINAL:
-
-#### ✅ **ESTRUCTURA LIMPIA PARA REAL:**
+#### 4. 🔗 **OFICINA INTEGRACIÓN - DASHBOARD**
 ```
-src/analysis/piso_3/
-├── deteccion/
-│   ├── fvg_detector.py ✅ REAL
-│   ├── multi_timeframe_detector.py ✅ REAL
-│   ├── fvg_alert_system.py ✅ REAL
-│   └── __init__.py (ConfluenceAnalyzer) ✅ REAL
-├── analisis/
-│   ├── fvg_quality_analyzer.py 🎯 SIGUIENTE
-│   ├── fvg_predictor.py
-│   ├── session_analyzer.py
-│   └── market_regime_detector.py
-├── ia/
-│   ├── ml_predictor.py
-│   ├── pattern_recognizer.py
-│   └── auto_optimizer.py
-├── trading/
-│   ├── signal_generator.py
-│   ├── risk_manager.py
-│   └── live_trader.py
-└── integracion/
-    ├── dashboard.py
-    ├── live_monitor.py
-    └── data_integrator.py
+Implementar final:
+├── src/analysis/piso_3/integracion/dashboard.py ← 3 SEMANAS
+├── LiveMonitor FVG tiempo real ← 4 SEMANAS
+├── Alertas avanzadas ← 4 SEMANAS
+└── Reportes automáticos ← 4 SEMANAS
 ```
 
-## 🚀 ACCIÓN INMEDIATA:
+### 🚀 ROADMAP EJECUTIVO:
 
-### 1. **CONSOLIDAR DETECCIÓN** (5 min)
-Mover archivos core validados a piso_3/deteccion/
+#### ⚡ **PRÓXIMAS 48 HORAS:**
+- ✅ **Demo FVGQualityAnalyzer** con datos reales
+- ✅ **Pipeline Detección → Análisis** funcionando
+- ✅ **Scoring de calidad** validado
 
-### 2. **VALIDAR ANÁLISIS** (2-3 horas)
-Crear demo para FVGQualityAnalyzer y modularizar
+#### 🔥 **PRÓXIMA SEMANA:**
+- ✅ **FVGMLPredictor básico** implementado
+- ✅ **Entrenamiento ML** con datos reales
+- ✅ **Pipeline Detección → Análisis → IA** operativo
 
-### 3. **LIMPIAR ESTRUCTURA** (30 min)
-Eliminar duplicaciones y organizar imports
+#### 🎯 **PRÓXIMAS 2 SEMANAS:**
+- ✅ **Trading signals automáticas** desde FVG
+- ✅ **Integración con OrderExecutor** funcionando
+- ✅ **Sistema FVG end-to-end** operativo
+
+#### 🏆 **PRÓXIMAS 4 SEMANAS:**
+- ✅ **Dashboard FVG completo** con interface web
+- ✅ **Sistema completamente autónomo** FVG
+- ✅ **Piso 3 al 100%** operativo
+
+### 🎯 ACCIÓN INMEDIATA:
+
+#### **TAREA #1: Demo FVGQualityAnalyzer (HOY)**
+```python
+# Crear: scripts/demo_fvg_quality_analyzer.py
+# Input: FVGs del ConfluenceAnalyzer (3,091 FVGs)
+# Proceso: Análisis de calidad por FVG
+# Output: Scores de calidad + métricas
+# Tiempo estimado: 2-3 horas
+```
+
+#### **VALIDACIONES REQUERIDAS:**
+- Tamaño FVG (pips)
+- Contexto mercado (tendencia)
+- Proximidad niveles clave
+- Volumen y momentum
+- Score final ponderado
+
+### � RESULTADO ESPERADO:
+
+#### ✅ **SISTEMA FVG COMPLETO:**
+```
+Pipeline completo:
+Datos OHLC → FVGDetector → QualityAnalyzer → MLPredictor → SignalGenerator → OrderExecutor → MT5
+```
+
+**ETA Sistema FVG al 100%:** 4 semanas
+**Estado actual:** 45% completado (Detección operativa)
+**Siguiente hito:** 70% (Análisis + IA básica operativa)

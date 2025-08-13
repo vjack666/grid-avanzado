@@ -1,4 +1,15 @@
-# � GRID AVANZADO - Sistema de Trading Automatizado
+# 🏗️ GRID AVANZADO - Sistema de Trading Auto-Suficiente
+
+**Sistema avanzado de trading con arquitectura robusta, Caja Negra forense y Auto-instalación validada**
+
+## 📊 **¿QUÉ ES GRID AVANZADO?**
+
+Un sistema de trading completamente automatizado y auto-suficiente que utiliza:
+- 🗃️ **Caja Negra Forense** con 12 categorías de logging especializado
+- 🏗️ **Auto-instalación** validada para nueva PC sin configuración
+- 📈 **Analytics avanzado** de mercado y performance en tiempo real
+- 🤖 **Optimización automática** de parámetros inteligente
+- 🔍 **Monitoreo 24/7** con alertas y consolidación automáticaANZADO - Sistema de Trading Automatizado
 
 **Sistema avanzado de trading con Grid Strategy, Analytics en tiempo real y Optimización automática**
 
