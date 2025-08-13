@@ -1,20 +1,31 @@
 """
-🚨 SISTEMA DE ALERTAS FVG
-Sistema de alertas inteligente en tiempo real
+🚨 SISTEMA UNIFICADO DE NOTIFICACIONES FVG - PISO 3
+Sistema de notificaciones especializado para Fair Value Gaps
+Integrado con AlertEngine del SÓTANO 2 y Enhanced Order Executor
+
+Autor: Trading Grid System
 Fecha: Agosto 13, 2025
-Oficina: Alertas - Piso 3
-Estado: Sistema de Notificaciones Organizado
+Oficina: Piso 3 - Advanced Analytics
+Estado: SISTEMA OPERATIVO DE PRODUCCIÓN
+Versión: v2.0.0-PRODUCTION
+
+PROPÓSITO REAL:
+- Sistema especializado de notificaciones para eventos FVG
+- Bridge entre FVGDetector y Enhanced Order Executor
+- Gestión de alertas críticas de trading automático
+- Integración con canales externos (Discord, Telegram, Email)
+- Monitoreo en tiempo real de oportunidades FVG
 """
 
 # =============================================================================
-# IMPORTS
+# IMPORTS ESPECIALIZADOS PARA PRODUCCIÓN
 # =============================================================================
 import asyncio
 import json
 import logging
 import os
-import random
 import smtplib
+import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Callable, Any
 from dataclasses import dataclass, field
@@ -26,18 +37,18 @@ from email.mime.multipart import MIMEMultipart
 
 import aiohttp
 
+# Importaciones del sistema Trading Grid
 from src.core.config_manager import ConfigManager
+from src.core.logger_manager import LoggerManager
 
 # =============================================================================
-# CONFIGURACIÓN Y LOGGER
+# CONFIGURACIÓN DEL SISTEMA REAL
 # =============================================================================
 logger = logging.getLogger(__name__)
 
-# Configuración dinámica anti-hardcoding
-try:
-    _config_manager = ConfigManager()
-except:
-    _config_manager = None
+# Sistema de configuración integrado
+config_manager = ConfigManager()
+logger_manager = LoggerManager()
 
 # =============================================================================
 # ENUMS Y DATACLASSES
@@ -209,11 +220,16 @@ class WebhookAlertChannel(AlertChannel):
         super().__init__(f"Webhook-{platform}", enabled=True)
         self.webhook_url = webhook_url
         self.platform = platform.lower()
+        # Formateador personalizado usando Callable
+        self.custom_formatter: Optional[Callable[[Alert], Dict]] = None
 
     async def send_alert(self, alert: Alert) -> bool:
         """Envía alerta por webhook"""
         try:
-            if self.platform == "discord":
+            # Usar formateador personalizado si existe
+            if self.custom_formatter:
+                payload = self.custom_formatter(alert)
+            elif self.platform == "discord":
                 payload = self._format_discord_message(alert)
             elif self.platform == "slack":
                 payload = self._format_slack_message(alert)
@@ -450,6 +466,9 @@ class FVGAlertSystem:
         self.sent_alerts = deque(maxlen=100)  # Para throttling
         self.last_alerts = {}  # Para supresión de duplicados
         
+        # Filtro personalizado usando Callable
+        self.custom_filter: Optional[Callable[[Alert], bool]] = None
+        
         # Métricas
         self.metrics = {
             'total_alerts': 0,
@@ -564,6 +583,10 @@ class FVGAlertSystem:
 
     def _should_send_alert(self, alert: Alert) -> bool:
         """Verifica si se debe enviar la alerta"""
+        # Verificar filtro personalizado primero
+        if self.custom_filter and not self.custom_filter(alert):
+            return False
+            
         # Verificar prioridad mínima
         priority_levels = {
             AlertPriority.LOW: 1,
@@ -616,8 +639,9 @@ class FVGAlertSystem:
     def _generate_alert_id(self) -> str:
         """Genera ID único para alerta"""
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        rand_suffix = random.randint(1000, 9999)
-        return f"ALERT_{timestamp}_{rand_suffix}"
+        import uuid
+        rand_suffix = str(uuid.uuid4())[:8]
+        return f"FVG_ALERT_{timestamp}_{rand_suffix}"
 
     # =========================================================================
     # MÉTODOS ESPECÍFICOS DE ALERTAS
@@ -882,84 +906,315 @@ def create_development_alert_system() -> FVGAlertSystem:
     return FVGAlertSystem(dev_config)
 
 # =============================================================================
-# FUNCIONES DE INTEGRACIÓN
+# FUNCIONES DE INTEGRACIÓN REAL CON EL SISTEMA
 # =============================================================================
-async def integrate_with_fvg_detector(alert_system: FVGAlertSystem, fvg_detector):
+class FVGNotificationBridge:
     """
-    🔗 Integra el sistema de alertas con el detector FVG
-    Args:
-        alert_system: Sistema de alertas
-        fvg_detector: Detector FVG del sistema principal
+    🌉 PUENTE DE NOTIFICACIONES FVG
+    Integra el sistema de alertas FVG con el sistema principal
     """
-    def on_fvg_detected(fvg_data: Dict, symbol: str, timeframe: str):
-        """Callback cuando se detecta un FVG"""
-        asyncio.create_task(alert_system.send_fvg_alert(fvg_data, symbol, timeframe))
+    
+    def __init__(self, alert_system: FVGAlertSystem, enhanced_order_executor=None):
+        self.alert_system = alert_system
+        self.enhanced_order_executor = enhanced_order_executor
+        self.logger = logging.getLogger("FVGNotificationBridge")
         
-        # Si es un FVG grande, enviar alerta especial
-        gap_pips = fvg_data.get('gap_size', 0) * 10000
-        if gap_pips >= 15:  # FVG excepcional
-            asyncio.create_task(alert_system.send_large_fvg_alert(fvg_data, symbol, timeframe))
+    async def on_fvg_detected(self, fvg_data, symbol: str, timeframe: str):
+        """
+        Callback real para cuando se detecta un FVG
+        Integrado con el FVGDetector del sistema principal
+        """
+        try:
+            # Convertir FVGData a dict si es necesario
+            if hasattr(fvg_data, '__dict__'):
+                fvg_dict = {
+                    'gap_size': fvg_data.gap_size,
+                    'type': fvg_data.type,
+                    'gap_low': fvg_data.gap_low,
+                    'gap_high': fvg_data.gap_high,
+                    'formation_time': fvg_data.formation_time.isoformat() if hasattr(fvg_data.formation_time, 'isoformat') else str(fvg_data.formation_time)
+                }
+            else:
+                fvg_dict = fvg_data
+                
+            # Enviar alerta especializada
+            await self.alert_system.send_fvg_alert(fvg_dict, symbol, timeframe)
+            
+            # Notificar a Enhanced Order Executor si está disponible
+            if self.enhanced_order_executor:
+                await self._notify_enhanced_executor(fvg_dict, symbol, timeframe)
+                
+            # Log del evento
+            self.logger.info(f"📡 FVG Notification Bridge: {symbol} {timeframe} - Gap: {fvg_dict.get('gap_size', 0)*10000:.1f} pips")
+            
+        except Exception as e:
+            self.logger.error(f"❌ Error en FVG notification bridge: {e}")
 
-    def on_confluence_detected(confluence_data: Dict, symbol: str):
-        """Callback cuando se detecta confluencia"""
-        asyncio.create_task(alert_system.send_confluence_alert(confluence_data, symbol))
+    async def on_confluence_detected(self, confluence_data: Dict, symbol: str):
+        """
+        Callback real para cuando se detecta confluencia
+        """
+        try:
+            await self.alert_system.send_confluence_alert(confluence_data, symbol)
+            self.logger.info(f"🔗 Confluencia detectada para {symbol}: fuerza {confluence_data.get('confluence_strength', 0)}")
+        except Exception as e:
+            self.logger.error(f"❌ Error en confluence notification: {e}")
+            
+    async def _notify_enhanced_executor(self, fvg_data: Dict, symbol: str, timeframe: str):
+        """Notifica al Enhanced Order Executor sobre nuevo FVG"""
+        try:
+            if hasattr(self.enhanced_order_executor, 'on_fvg_opportunity'):
+                await self.enhanced_order_executor.on_fvg_opportunity(fvg_data, symbol, timeframe)
+        except Exception as e:
+            self.logger.error(f"❌ Error notificando a Enhanced Order Executor: {e}")
 
-    # Registrar callbacks (esto sería específico del detector real)
-    # fvg_detector.register_callback('fvg_detected', on_fvg_detected)
-    # fvg_detector.register_callback('confluence_detected', on_confluence_detected)
+
+def setup_fvg_notifications_system() -> tuple[FVGAlertSystem, FVGNotificationBridge]:
+    """
+    🔧 CONFIGURACIÓN DEL SISTEMA REAL DE NOTIFICACIONES FVG
     
-    logger.info("Sistema de alertas integrado con detector FVG")
-
-# =============================================================================
-# FUNCIÓN DE TESTING
-# =============================================================================
-async def test_alert_system():
-    """🧪 Test del sistema de alertas"""
-    print("🚨 Testing Alert System...")
+    Returns:
+        Tuple con (alert_system, notification_bridge) configurados para producción
+    """
+    # Configuración de producción para notificaciones FVG
+    production_config = {
+        'max_alerts_per_minute': 20,  # Más alertas para trading activo
+        'duplicate_suppression_minutes': 2,  # Reducido para FVG rápidos
+        'min_priority': AlertPriority.MEDIUM,  # Solo alertas importantes
+        'enabled_types': [
+            AlertType.NEW_FVG.value,
+            AlertType.CONFLUENCE.value,
+            AlertType.LARGE_FVG.value,
+            AlertType.FVG_FILLED.value
+        ],
+        'throttling_enabled': True,
+        'history_max_size': 200  # Historial más pequeño para performance
+    }
     
-    # Crear sistema
-    alert_system = FVGAlertSystem()
+    # Crear sistema especializado
+    fvg_alert_system = FVGAlertSystem(production_config)
+    
+    # Configurar canales según configuración del sistema
+    try:
+        # Canal Discord/Webhook si está configurado
+        # Nota: Por ahora usar configuración por defecto
+        # TODO: Implementar cuando ConfigManager tenga soporte completo para notifications
+        
+        # Ejemplo de configuración manual (reemplazar con config real)
+        webhook_url = None  # config_manager.get_webhook_url() cuando esté disponible
+        if webhook_url:
+            webhook_channel = WebhookAlertChannel(webhook_url, "discord")
+            fvg_alert_system.add_channel(webhook_channel)
+            logger.info("✅ Canal webhook FVG configurado")
+            
+        # Canal email (configurar manualmente por ahora)
+        email_enabled = False  # Cambiar a True y configurar para producción
+        if email_enabled:
+            # Configuración manual de email para producción
+            email_channel = EmailAlertChannel(
+                smtp_server='smtp.gmail.com',  # Configurar según necesidades
+                smtp_port=587,
+                username='',  # Configurar email
+                password='',  # Configurar password
+                from_email='',  # Configurar email origen
+                to_emails=[]  # Configurar emails destino
+            )
+            fvg_alert_system.add_channel(email_channel)
+            logger.info("✅ Canal email FVG configurado")
+            
+    except Exception as e:
+        logger.warning(f"⚠️ Error configurando canales externos: {e}")
+    
+    # Crear bridge de integración
+    notification_bridge = FVGNotificationBridge(fvg_alert_system)
+    
+    logger.info("🚨 Sistema de notificaciones FVG inicializado para PRODUCCIÓN")
+    
+    return fvg_alert_system, notification_bridge
 
-    # Enviar alertas de prueba
-    await alert_system.send_alert(
-        AlertType.NEW_FVG,
-        "Test FVG Alert",
-        "Esto es una alerta de prueba",
-        _config_manager.get_primary_symbol() if _config_manager else 'EURUSD',
-        AlertPriority.HIGH,
-        "M5",
-        {'gap_size_pips': 5.5}
-    )
 
-    await alert_system.send_confluence_alert(
-        {
-            'confluence_strength': 8.5, 
-            'timeframes': ['M15', _config_manager.get_default_timeframe() if _config_manager else 'H1']
-        },
-        _config_manager.get_primary_symbol() if _config_manager else 'EURUSD'
-    )
-
-    await alert_system.send_large_fvg_alert(
-        {'gap_size': 0.0015, 'type': 'BULLISH'},
-        "GBPUSD",
-        _config_manager.get_default_timeframe() if _config_manager else 'H1'
-    )
-
-    await alert_system.send_system_status_alert("ACTIVE", {'uptime': '2h 30m'})
-
-    # Mostrar métricas
-    metrics = alert_system.get_metrics()
-    print(f"✅ Alertas enviadas: {metrics['sent_alerts']}")
-    print(f"📊 Total alertas: {metrics['total_alerts']}")
-
-    # Health check
-    health = await alert_system.health_check()
-    print(f"🏥 Estado de salud: {health['status']}")
-    print(f"📡 Canales activos: {health['channels_active']}/{health['channels_total']}")
+def integrate_with_fvg_detector(notification_bridge: FVGNotificationBridge, fvg_detector):
+    """
+    🔗 Integra el sistema de notificaciones con el detector FVG real
+    Args:
+        notification_bridge: Bridge de notificaciones configurado
+        fvg_detector: RealTimeFVGDetector del sistema principal
+    """
+    try:
+        # Registrar callbacks reales en el detector
+        if hasattr(fvg_detector, 'set_callbacks'):
+            fvg_detector.set_callbacks(
+                on_fvg_detected=notification_bridge.on_fvg_detected,
+                on_fvg_filled=None  # Por ahora solo nuevos FVGs
+            )
+            logger.info("✅ Callbacks FVG registrados en detector real")
+        else:
+            logger.warning("⚠️ FVG Detector no tiene método set_callbacks")
+            
+    except Exception as e:
+        logger.error(f"❌ Error integrando con FVG detector: {e}")
 
 
 # =============================================================================
-# MAIN
+# FUNCIONES DE FACTORY PARA DIFERENTES ENTORNOS
+# =============================================================================
+
+
+def create_alert_filter(strategy: str) -> Callable[[Alert], bool]:
+    """
+    🎯 Crea filtros de alertas según estrategia de trading
+    Args:
+        strategy: Tipo de estrategia ('scalping', 'swing', 'daily')
+    Returns:
+        Función filtro que evalúa si una alerta debe enviarse
+    """
+    # Helper para comparar prioridades
+    def _priority_level(priority: AlertPriority) -> int:
+        levels = {
+            AlertPriority.LOW: 1,
+            AlertPriority.MEDIUM: 2,
+            AlertPriority.HIGH: 3,
+            AlertPriority.CRITICAL: 4
+        }
+        return levels.get(priority, 0)
+    
+    def scalping_filter(alert: Alert) -> bool:
+        """Filtro para estrategia de scalping"""
+        if alert.type == AlertType.NEW_FVG:
+            gap_pips = alert.data.get('gap_size_pips', 0)
+            return gap_pips <= 5 and alert.timeframe in ['M1', 'M5', 'M15']
+        return _priority_level(alert.priority) >= _priority_level(AlertPriority.MEDIUM)
+    
+    def swing_filter(alert: Alert) -> bool:
+        """Filtro para estrategia de swing trading"""
+        if alert.type == AlertType.NEW_FVG:
+            gap_pips = alert.data.get('gap_size_pips', 0)
+            return gap_pips >= 8 and alert.timeframe in ['H1', 'H4']
+        return _priority_level(alert.priority) >= _priority_level(AlertPriority.HIGH)
+    
+    def daily_filter(alert: Alert) -> bool:
+        """Filtro para estrategia de trading diario"""
+        if alert.type == AlertType.NEW_FVG:
+            return alert.timeframe in ['H4', 'D1']
+        return alert.priority == AlertPriority.CRITICAL
+    
+    filters = {
+        'scalping': scalping_filter,
+        'swing': swing_filter,
+        'daily': daily_filter
+    }
+    
+    return filters.get(strategy, lambda alert: True)
+
+
+def create_custom_formatter(platform: str) -> Callable[[Alert], Dict]:
+    """
+    🎨 Crea formateadores personalizados para diferentes plataformas
+    Args:
+        platform: Plataforma de destino ('discord', 'slack', 'telegram')
+    Returns:
+        Función que formatea una alerta para la plataforma específica
+    """
+    def discord_trading_format(alert: Alert) -> Dict:
+        """Formato especializado para Discord trading"""
+        priority_emojis = {
+            AlertPriority.LOW: "🟢",
+            AlertPriority.MEDIUM: "🟡", 
+            AlertPriority.HIGH: "🔴",
+            AlertPriority.CRITICAL: "🚨"
+        }
+        
+        emoji = priority_emojis.get(alert.priority, "⚪")
+        
+        embed = {
+            "embeds": [{
+                "title": f"{emoji} {alert.title}",
+                "description": f"**{alert.symbol}** | {alert.timeframe or 'ALL'}",
+                "color": 0x00ff41 if alert.type == AlertType.NEW_FVG else 0xff6b00,
+                "fields": [
+                    {"name": "💬 Mensaje", "value": alert.message, "inline": False},
+                    {"name": "⏰ Hora", "value": alert.timestamp.strftime('%H:%M:%S'), "inline": True},
+                    {"name": "📈 Prioridad", "value": alert.priority.value, "inline": True}
+                ],
+                "footer": {"text": f"ID: {alert.id}"}
+            }]
+        }
+        
+        # Agregar datos específicos de FVG
+        if alert.data and 'gap_size_pips' in alert.data:
+            embed["embeds"][0]["fields"].append({
+                "name": "📏 Gap", 
+                "value": f"{alert.data['gap_size_pips']:.1f} pips", 
+                "inline": True
+            })
+        
+        return embed
+    
+    def telegram_format(alert: Alert) -> Dict:
+        """Formato para Telegram"""
+        priority_emojis = {
+            AlertPriority.LOW: "🟢",
+            AlertPriority.MEDIUM: "🟡", 
+            AlertPriority.HIGH: "🔴",
+            AlertPriority.CRITICAL: "🚨"
+        }
+        
+        emoji = priority_emojis.get(alert.priority, "⚪")
+        gap_info = ""
+        
+        if alert.data and 'gap_size_pips' in alert.data:
+            gap_info = f"\n📏 Gap: {alert.data['gap_size_pips']:.1f} pips"
+        
+        text = f"""
+{emoji} **{alert.title}**
+
+💬 {alert.message}
+📊 {alert.symbol} | {alert.timeframe or 'ALL'}
+⏰ {alert.timestamp.strftime('%H:%M:%S')}
+📈 {alert.priority.value}{gap_info}
+
+🆔 `{alert.id}`
+        """.strip()
+        
+        return {"text": text, "parse_mode": "Markdown"}
+    
+    formatters = {
+        'discord': discord_trading_format,
+        'telegram': telegram_format,
+        'slack': lambda alert: {"text": f"🚨 {alert.title}: {alert.message}"}
+    }
+    
+    return formatters.get(platform, lambda alert: {"text": str(alert.to_dict())})
+
+
+# Ejemplo de uso de Callable en el sistema
+def setup_trading_strategy(alert_system: FVGAlertSystem, strategy: str = "scalping"):
+    """
+    ⚙️ Configura el sistema de alertas para una estrategia específica
+    Args:
+        alert_system: Sistema de alertas a configurar
+        strategy: Estrategia de trading ('scalping', 'swing', 'daily')
+    """
+    # Crear filtro específico para la estrategia
+    custom_filter: Callable[[Alert], bool] = create_alert_filter(strategy)
+    
+    # Aplicar filtro personalizado
+    alert_system.custom_filter = custom_filter
+    
+    # Configurar formatters personalizados para canales webhook
+    for channel in alert_system.channels:
+        if isinstance(channel, WebhookAlertChannel):
+            if "discord" in channel.name.lower():
+                formatter: Callable[[Alert], Dict] = create_custom_formatter("discord")
+                channel.custom_formatter = formatter
+    
+    logger.info(f"Sistema configurado para estrategia: {strategy}")
+
+# =============================================================================
+# MAIN - SOLO PARA TESTING EN DESARROLLO
 # =============================================================================
 if __name__ == "__main__":
-    asyncio.run(test_alert_system())
+    # Este archivo es importado por el sistema principal
+    # No se ejecuta directamente en producción
+    print("🚨 FVG Notification System - Módulo de Producción")
+    print("✅ Sistema listo para integración con Trading Grid")

@@ -7,14 +7,13 @@ Oficina: Detección - Piso 3
 Estado: Implementación Base
 """
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timezone
-from typing import List, Dict, Optional, Tuple
-from dataclasses import dataclass
+# Import centralizado desde SÓTANO 1 CORE
+from src.core.common_imports import (
+    pd, np, datetime, asyncio, logging,
+    Dict, List, Optional, Tuple, dataclass
+)
+from datetime import timezone
 from collections import deque
-import asyncio
-import logging
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)

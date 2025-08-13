@@ -274,6 +274,10 @@ class BlackBoxLogger:
         """Compatibilidad: log warning"""
         self.log_system(LogLevel.WARNING, message, metadata)
     
+    def log_debug(self, message: str, metadata: Dict[str, Any] = None):
+        """Compatibilidad: log debug"""
+        self.log_system(LogLevel.DEBUG, message, metadata)
+    
     def get_logger(self, name: str) -> logging.Logger:
         """Compatibilidad: obtener logger estándar"""
         return logging.getLogger(name)
