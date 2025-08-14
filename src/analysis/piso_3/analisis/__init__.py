@@ -11,8 +11,7 @@ Componentes:
 
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)

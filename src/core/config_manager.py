@@ -12,8 +12,7 @@ Protocolo: TRADING GRID v2.0
 
 import os
 import json
-from typing import Dict, Any, List, Optional
-from pathlib import Path
+from typing import Dict, Any, List
 
 class ConfigManager:
     """
@@ -324,7 +323,7 @@ class ConfigManager:
             }
         }
     
-    def validate_paths() -> dict:
+    def validate_paths(self) -> dict:
         """
         Valida que todas las rutas sean accesibles.
         
@@ -390,21 +389,24 @@ class ConfigManager:
 if __name__ == "__main__":
     print("🧪 Testing ConfigManager...")
     
+    # Crear instancia del ConfigManager
+    config_manager = ConfigManager()
+    
     # Test 1: Obtener rutas
-    paths = self.get_all_paths()
+    paths = config_manager.get_all_paths()
     print(f"✅ {len(paths)} rutas configuradas")
     
     # Test 2: Crear directorios
-    success = ConfigManager.ensure_directories()
+    success = config_manager.ensure_directories()
     print(f"✅ Directorios creados: {success}")
     
     # Test 3: Validar rutas
-    validation = ConfigManager.validate_paths()
+    validation = config_manager.validate_paths()
     valid_count = sum(1 for v in validation.values() if v.get('exists', False) or v.get('parent_exists', False))
     print(f"✅ Rutas válidas: {valid_count}/{len(validation)}")
     
     # Test 4: Info del sistema
-    info = self.get_system_info()
+    info = config_manager.get_system_info()
     print(f"✅ ConfigManager v{info['version']} operativo")
     
     print("🎉 ConfigManager testing completado!")

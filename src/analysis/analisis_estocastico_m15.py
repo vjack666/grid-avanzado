@@ -194,6 +194,4 @@ def mostrar_checkpoint_estocastico(estoc_cache, lotaje_inicial, lotaje_recomenda
         tabla.add_row("📈 Última orden estocástico BUY", ultima_orden_buy.strftime('%Y-%m-%d %H:%M:%S'))
     tabla.add_row("📊 Resultado final", f"{senal_tipo if senal_valida else 'Sin señal válida'}")
     
-    return Panel(tabla, title="Checkpoint Estocástico M15", border_style="magenta")
-
-    return Panel(tabla, title=f"📊 Checkpoint Estocástico [{modalidad_operacion}]", border_style="cyan", expand=False)
+    return Panel(tabla, title=f"📊 Checkpoint Estocástico M15 [{modalidad_operacion}]", border_style="cyan", expand=False)

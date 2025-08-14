@@ -1,0 +1,28 @@
+{
+  "config": {
+    "symbol": "EURUSD",
+    "timeframe": "M15",
+    "start_date": "2022-08-14",
+    "end_date": "2025-08-13",
+    "initial_balance": 10000.0,
+    "strategy_type": "GRID_BOLLINGER"
+  },
+  "results": {
+    "initial_balance": 10000.0,
+    "final_balance": 10937.114903560658,
+    "net_profit": 1025.1149035606857,
+    "total_return_percent": 9.371149035606576,
+    "total_trades": 43,
+    "winning_trades": 39,
+    "losing_trades": 4,
+    "win_rate": 90.69767441860465,
+    "max_drawdown_percent": 8.477754354800444,
+    "sharpe_ratio": 0.3556466082509107,
+    "execution_time_seconds": 2.950745
+  },
+  "metadata": {
+    "backtest_date": "2025-08-13T13:18:55.595925",
+    "data_points": 2881,
+    "period_days": 0
+  }
+}

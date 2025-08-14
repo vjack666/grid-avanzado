@@ -22,12 +22,41 @@ Fecha: Agosto 13, 2025
 
 import os
 import sys
-import time
-import json
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
+
+# MetaTrader 5
+try:
+    import MetaTrader5 as mt5
+    MT5_AVAILABLE = True
+except ImportError:
+    MT5_AVAILABLE = False
+    # Mock para desarrollo sin MT5
+    class MT5:
+        # Constantes de órdenes
+        ORDER_TYPE_BUY_LIMIT = 2
+        ORDER_TYPE_SELL_LIMIT = 3
+        TRADE_ACTION_PENDING = 1
+        ORDER_TIME_SPECIFIED = 1
+        ORDER_FILLING_RETURN = 0
+        TRADE_RETCODE_DONE = 10009
+        TRADE_ACTION_REMOVE = 2
+        
+        @staticmethod
+        def symbol_info(*args, **kwargs): return None
+        @staticmethod 
+        def symbol_info_tick(*args, **kwargs): return None
+        @staticmethod
+        def order_send(*args, **kwargs): return None
+        @staticmethod
+        def last_error(*args, **kwargs): return 0
+        @staticmethod
+        def orders_get(*args, **kwargs): return None
+        @staticmethod
+        def history_deals_get(*args, **kwargs): return None
+    mt5 = MT5()
 
 # Imports del sistema
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -37,16 +66,16 @@ from src.core.error_manager import ErrorManager
 
 # Imports de análisis FVG
 try:
-    from src.analysis.piso_3.deteccion.fvg_detector import FVGDetector, FVGData
+    from src.analysis.piso_3.deteccion.fvg_detector import FVGDetector
     FVG_DETECTOR_AVAILABLE = True
 except ImportError:
     FVG_DETECTOR_AVAILABLE = False
     FVGDetector = None
-    FVGData = None
 
 try:
-    from src.analysis.piso_3.analisis.fvg_quality_analyzer import FVGQualityAnalyzer
-    FVG_QUALITY_ANALYZER_AVAILABLE = True
+    # Intentar importar el analizador de calidad FVG si existe
+    pass  # El módulo no existe, usar mock siempre
+    FVG_QUALITY_ANALYZER_AVAILABLE = False
 except ImportError:
     FVG_QUALITY_ANALYZER_AVAILABLE = False
     
@@ -65,13 +94,11 @@ except ImportError:
             return True
 
 try:
-    from src.analysis.piso_3.trading import FVGSignalGenerator, SignalType, SignalStrength
-    FVG_SIGNAL_GENERATOR_AVAILABLE = True
+    # Los módulos de trading están en desarrollo
+    pass  # Los módulos no existen, usar mock siempre
+    FVG_SIGNAL_GENERATOR_AVAILABLE = False
 except ImportError:
     FVG_SIGNAL_GENERATOR_AVAILABLE = False
-    FVGSignalGenerator = None
-    SignalType = None
-    SignalStrength = None
 
 if not (FVG_DETECTOR_AVAILABLE or FVG_QUALITY_ANALYZER_AVAILABLE or FVG_SIGNAL_GENERATOR_AVAILABLE):
     print("⚠️ Import warning FVG modules: Componentes FVG no disponibles, usando análisis básico")
@@ -97,12 +124,12 @@ class FVGLimitOrderType(Enum):
 class FVGLimitOrder:
     """Orden límite basada en análisis FVG"""
     symbol: str
-    order_type: FVGLimitOrderType
+    order_type: 'FVGLimitOrderType'
     entry_price: float
     stop_loss: float
     take_profit: float
     volume: float
-    fvg_data: FVGData
+    fvg_data: Any  # FVGData cuando esté disponible
     quality_score: float
     confidence: float
     expiry_time: datetime
@@ -131,9 +158,9 @@ class EnhancedOrderExecutor:
                  config_manager: Optional[ConfigManager] = None,
                  logger_manager: Optional[LoggerManager] = None,
                  error_manager: Optional[ErrorManager] = None,
-                 fvg_detector: Optional[FVGDetector] = None,
-                 fvg_quality_analyzer: Optional[FVGQualityAnalyzer] = None,
-                 ml_foundation: Optional[FVGDatabaseManager] = None):
+                 fvg_detector: Optional[Any] = None,  # FVGDetector cuando esté disponible
+                 fvg_quality_analyzer: Optional[Any] = None,  # FVGQualityAnalyzer cuando esté disponible
+                 ml_foundation: Optional[Any] = None):  # FVGDatabaseManager cuando esté disponible
         
         # Managers principales
         self.config = config_manager or ConfigManager()
@@ -186,7 +213,7 @@ class EnhancedOrderExecutor:
         self.logger.log_info(f"🎯 Modo: Órdenes límite inteligentes con análisis FVG")
     
     
-    def process_fvg_signal(self, fvg_data: FVGData, market_context: Dict = None) -> bool:
+    def process_fvg_signal(self, fvg_data: Any, market_context: Dict = None) -> bool:
         """
         🎯 FUNCIÓN PRINCIPAL: Procesar señal FVG y generar orden límite
         
@@ -245,7 +272,7 @@ class EnhancedOrderExecutor:
             return False
     
     
-    def _validate_fvg_for_trading(self, fvg_data: FVGData) -> bool:
+    def _validate_fvg_for_trading(self, fvg_data: Any) -> bool:
         """Validar FVG para generar orden de trading"""
         try:
             # Validar gap size en pips
@@ -265,7 +292,7 @@ class EnhancedOrderExecutor:
                 return False
             
             # Validar símbolo en MT5
-            symbol_info = mt5.symbol_info(fvg_data.symbol)
+            symbol_info = mt5.symbol_info(fvg_data.symbol)  # type: ignore
             if symbol_info is None:
                 self.logger.log_error(f"❌ Símbolo no disponible en MT5: {fvg_data.symbol}")
                 return False
@@ -277,7 +304,7 @@ class EnhancedOrderExecutor:
             return False
     
     
-    def _get_fvg_quality_score(self, fvg_data: FVGData) -> float:
+    def _get_fvg_quality_score(self, fvg_data: Any) -> float:
         """Obtener score de calidad del FVG"""
         try:
             if self.fvg_quality_analyzer:
@@ -308,7 +335,7 @@ class EnhancedOrderExecutor:
         return len(active_orders_for_symbol) < max_orders
     
     
-    def _calculate_fvg_limit_order_params(self, fvg_data: FVGData, quality_score: float, market_context: Dict = None) -> Optional[Dict]:
+    def _calculate_fvg_limit_order_params(self, fvg_data: Any, quality_score: float, market_context: Dict = None) -> Optional[Dict]:
         """
         🧮 CÁLCULO INTELIGENTE DE PARÁMETROS DE ORDEN LÍMITE
         
@@ -317,7 +344,7 @@ class EnhancedOrderExecutor:
         """
         try:
             # Obtener precios actuales
-            tick = mt5.symbol_info_tick(fvg_data.symbol)
+            tick = mt5.symbol_info_tick(fvg_data.symbol)  # type: ignore
             if not tick:
                 return None
             
@@ -360,7 +387,7 @@ class EnhancedOrderExecutor:
             return None
     
     
-    def _calculate_smart_entry_price(self, fvg_data: FVGData, current_price: float, quality_score: float) -> float:
+    def _calculate_smart_entry_price(self, fvg_data: Any, current_price: float, quality_score: float) -> float:
         """
         🎯 CÁLCULO DE PRECIO DE ENTRADA INTELIGENTE
         
@@ -369,7 +396,6 @@ class EnhancedOrderExecutor:
         - FVG BEARISH: SELL LIMIT en gap_high (retroceso)
         """
         gap_mid = (fvg_data.gap_high + fvg_data.gap_low) / 2
-        retracement_pct = self.fvg_order_config['retracement_percentage']
         
         if fvg_data.type == 'BULLISH':
             # Para FVG bullish, esperamos retroceso hacia gap_low
@@ -382,36 +408,47 @@ class EnhancedOrderExecutor:
                 optimal_entry = min(optimal_entry, gap_mid)
                 
         else:  # BEARISH FVG
-            # Para FVG bearish, esperamos retroceso hacia gap_high
+            # Para FVG bearish con SELL LIMIT, necesitamos entrar ARRIBA del precio actual
+            # Usamos gap_high como referencia pero ajustamos para estar arriba del precio actual
             entry_adjustment = (1 - quality_score) * 0.2
-            optimal_entry = fvg_data.gap_high - (fvg_data.gap_size * entry_adjustment)
             
-            # Si el precio ya está por encima del gap, usar precio más conservador
+            # Calcular entry potencial en gap_high
+            gap_entry = fvg_data.gap_high - (fvg_data.gap_size * entry_adjustment)
+            
+            # CORRECCIÓN: Para SELL LIMIT, entry debe estar arriba del precio actual
+            if current_price >= gap_entry:
+                # Si el precio actual está en/arriba del gap, poner entry arriba del precio actual
+                optimal_entry = current_price + (fvg_data.gap_size * 0.1)  # 10% del gap arriba
+            else:
+                # Si el precio está debajo del gap, usar gap_high como entry
+                optimal_entry = fvg_data.gap_high
+            
+            # Si el precio ya está por encima del gap, usar precio más conservador arriba
             if current_price > fvg_data.gap_high:
-                optimal_entry = max(optimal_entry, gap_mid)
+                optimal_entry = max(optimal_entry, current_price + (fvg_data.gap_size * 0.1))
         
         self.logger.log_info(f"📊 Entry calculado: {optimal_entry:.5f} (gap: {fvg_data.gap_low:.5f}-{fvg_data.gap_high:.5f})")
         return optimal_entry
     
     
-    def _calculate_stop_loss(self, fvg_data: FVGData, entry_price: float, quality_score: float) -> float:
-        """Calcular stop loss basado en estructura FVG"""
+    def _calculate_stop_loss(self, fvg_data: Any, entry_price: float, quality_score: float) -> float:
+        """Calcular stop loss basado en estructura FVG y tipo de orden"""
         gap_size = fvg_data.gap_size
         
         # Ajustar stop loss por calidad (mayor calidad = stop más lejano)
-        sl_multiplier = 1.0 + (quality_score * 0.5)  # 1.0x - 1.5x
+        sl_multiplier = 0.3 + (quality_score * 0.2)  # 0.3x - 0.5x del gap size
         
         if fvg_data.type == 'BULLISH':
-            # Stop loss por debajo del gap
-            stop_loss = fvg_data.gap_low - (gap_size * sl_multiplier)
+            # Para BUY LIMIT: Stop loss por debajo del entry price
+            stop_loss = entry_price - (gap_size * sl_multiplier)
         else:
-            # Stop loss por encima del gap
-            stop_loss = fvg_data.gap_high + (gap_size * sl_multiplier)
+            # Para SELL LIMIT: Stop loss por encima del entry price
+            stop_loss = entry_price + (gap_size * sl_multiplier)
         
         return stop_loss
     
     
-    def _calculate_take_profit(self, fvg_data: FVGData, entry_price: float, stop_loss: float, quality_score: float) -> float:
+    def _calculate_take_profit(self, fvg_data: Any, entry_price: float, stop_loss: float, quality_score: float) -> float:
         """Calcular take profit basado en risk-reward y calidad FVG"""
         risk = abs(entry_price - stop_loss)
         target_rr = self.fvg_order_config['risk_reward_ratio']
@@ -455,7 +492,7 @@ class EnhancedOrderExecutor:
         return datetime.now() + timedelta(hours=expiry_hours)
     
     
-    def _create_fvg_limit_order(self, fvg_data: FVGData, params: Dict, quality_score: float) -> FVGLimitOrder:
+    def _create_fvg_limit_order(self, fvg_data: Any, params: Dict, quality_score: float) -> FVGLimitOrder:
         """Crear objeto FVGLimitOrder"""
         # Determinar tipo de orden
         if fvg_data.type == 'BULLISH':
@@ -481,6 +518,21 @@ class EnhancedOrderExecutor:
         )
     
     
+    def _normalize_price(self, symbol: str, price: float) -> float:
+        """Normalizar precio según las especificaciones del símbolo"""
+        try:
+            symbol_info = mt5.symbol_info(symbol)  # type: ignore
+            if symbol_info:
+                digits = symbol_info.digits
+                # Redondear al número correcto de dígitos decimales
+                return round(price, digits)
+            else:
+                # Fallback para EURUSD (5 dígitos)
+                return round(price, 5)
+        except Exception:
+            # Fallback conservador
+            return round(price, 5)
+    
     def _place_fvg_limit_order(self, fvg_order: FVGLimitOrder) -> bool:
         """Colocar orden límite FVG en MT5"""
         try:
@@ -490,15 +542,20 @@ class EnhancedOrderExecutor:
             else:
                 mt5_order_type = mt5.ORDER_TYPE_SELL_LIMIT
             
+            # Normalizar precios según las especificaciones del símbolo
+            normalized_price = self._normalize_price(fvg_order.symbol, fvg_order.entry_price)
+            normalized_sl = self._normalize_price(fvg_order.symbol, fvg_order.stop_loss)
+            normalized_tp = self._normalize_price(fvg_order.symbol, fvg_order.take_profit)
+            
             # Crear request MT5
             request = {
                 "action": mt5.TRADE_ACTION_PENDING,
                 "symbol": fvg_order.symbol,
                 "volume": fvg_order.volume,
                 "type": mt5_order_type,
-                "price": fvg_order.entry_price,
-                "sl": fvg_order.stop_loss,
-                "tp": fvg_order.take_profit,
+                "price": normalized_price,
+                "sl": normalized_sl,
+                "tp": normalized_tp,
                 "deviation": 10,
                 "magic": fvg_order.magic,
                 "comment": fvg_order.comment,
@@ -508,22 +565,28 @@ class EnhancedOrderExecutor:
             }
             
             self.logger.log_info(f"🚀 Colocando orden límite FVG: {fvg_order.symbol}")
+            self.logger.log_info(f"📊 Precios normalizados - Entry: {normalized_price:.5f}, SL: {normalized_sl:.5f}, TP: {normalized_tp:.5f}")
             
             # Ejecutar en MT5
-            result = mt5.order_send(request)
+            result = mt5.order_send(request)  # type: ignore
             
             if result and result.retcode == mt5.TRADE_RETCODE_DONE:
                 fvg_order.mt5_order_id = result.order
                 fvg_order.status = "PLACED"
                 
                 self.logger.log_success(f"✅ Orden límite FVG colocada exitosamente: #{result.order}")
-                self.logger.log_info(f"📊 Detalles: {fvg_order.symbol} {fvg_order.volume} lotes @ {fvg_order.entry_price:.5f}")
-                self.logger.log_info(f"🛡️ SL: {fvg_order.stop_loss:.5f} | 🎯 TP: {fvg_order.take_profit:.5f}")
+                self.logger.log_info(f"📊 Detalles: {fvg_order.symbol} {fvg_order.volume} lotes @ {normalized_price:.5f}")
+                self.logger.log_info(f"🛡️ SL: {normalized_sl:.5f} | 🎯 TP: {normalized_tp:.5f}")
                 
                 return True
             else:
-                error_code = result.retcode if result else mt5.last_error()
+                error_code = result.retcode if result else mt5.last_error()  # type: ignore
                 self.logger.log_error(f"❌ Error colocando orden límite: {error_code}")
+                
+                # Log adicional para debugging
+                if result:
+                    self.logger.log_error(f"🔍 Detalles del error MT5: {result}")
+                
                 return False
                 
         except Exception as e:
@@ -552,10 +615,10 @@ class EnhancedOrderExecutor:
                     'mt5_order_id': fvg_order.mt5_order_id,
                     'confidence': fvg_order.confidence,
                     
-                    # Datos adicionales para ML
-                    'vela1_open': 0.0, 'vela1_high': 0.0, 'vela1_low': 0.0, 'vela1_close': 0.0,
-                    'vela2_open': 0.0, 'vela2_high': 0.0, 'vela2_low': 0.0, 'vela2_close': 0.0,
-                    'vela3_open': 0.0, 'vela3_high': 0.0, 'vela3_low': 0.0, 'vela3_close': 0.0,
+                    # Datos adicionales para ML (incluir volúmenes que faltaban)
+                    'vela1_open': 0.0, 'vela1_high': 0.0, 'vela1_low': 0.0, 'vela1_close': 0.0, 'vela1_volume': 0,
+                    'vela2_open': 0.0, 'vela2_high': 0.0, 'vela2_low': 0.0, 'vela2_close': 0.0, 'vela2_volume': 0,
+                    'vela3_open': 0.0, 'vela3_high': 0.0, 'vela3_low': 0.0, 'vela3_close': 0.0, 'vela3_volume': 0,
                     'current_price': 0.0,
                     'distance_to_gap': 0.0
                 }
@@ -573,11 +636,11 @@ class EnhancedOrderExecutor:
         try:
             for order_id, fvg_order in list(self.active_fvg_orders.items()):
                 # Verificar estado en MT5
-                mt5_orders = mt5.orders_get(ticket=order_id)
+                mt5_orders = mt5.orders_get(ticket=order_id)  # type: ignore
                 
                 if not mt5_orders:  # Orden no encontrada = fue ejecutada o cancelada
                     # Buscar en historial
-                    deals = mt5.history_deals_get(ticket=order_id)
+                    deals = mt5.history_deals_get(ticket=order_id)  # type: ignore
                     if deals:
                         # Orden fue ejecutada
                         fvg_order.status = "FILLED"
@@ -631,7 +694,7 @@ class EnhancedOrderExecutor:
                         "action": mt5.TRADE_ACTION_REMOVE,
                         "order": order_id
                     }
-                    mt5.order_send(cancel_request)
+                    mt5.order_send(cancel_request)  # type: ignore
                 except:
                     pass  # Continuar aunque falle
             

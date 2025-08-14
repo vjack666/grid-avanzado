@@ -1,0 +1,22 @@
+{
+  "mt5_primary": {
+    "type": "MT5",
+    "symbol": "EURUSD",
+    "timeframe": "M15",
+    "enabled": true,
+    "priority": 1
+  },
+  "mt5_secondary": {
+    "type": "MT5",
+    "symbol": "GBPUSD",
+    "timeframe": "M15",
+    "enabled": true,
+    "priority": 2
+  },
+  "historical_data": {
+    "type": "CSV",
+    "path": "data/historical/fvg_data.csv",
+    "enabled": true,
+    "priority": 3
+  }
+}

@@ -4,6 +4,11 @@ import MetaTrader5 as mt5
 from datetime import datetime
 from typing import Optional, List, Any
 
+# --- Configuración de seguridad de terminales ---
+# MODO SEGURO ACTIVADO: No interfiere con otros bots
+SAFE_TERMINAL_MODE = True
+BOT_PROTECTION_ENABLED = True
+
 # --- Configuración de directorios ---
 user_dir: str = os.path.expanduser("~")
 SAFE_DATA_DIR: str = os.path.join(user_dir, "Documents", "GRID SCALP")

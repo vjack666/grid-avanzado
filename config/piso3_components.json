@@ -1,0 +1,42 @@
+{
+  "live_monitor": {
+    "monitor_interval": 30,
+    "alert_threshold": 7.5,
+    "max_alerts_per_hour": 20,
+    "log_performance": true,
+    "auto_restart": true
+  },
+  "alert_system": {
+    "rate_limits": {
+      "HIGH": 50,
+      "MEDIUM": 30,
+      "LOW": 20
+    },
+    "filters": {
+      "min_quality_score": 7.0,
+      "quiet_hours": {
+        "enabled": true,
+        "start": "22:00",
+        "end": "06:00"
+      }
+    }
+  },
+  "fvg_quality_analyzer": {
+    "min_quality_score": 6.5,
+    "weights": {
+      "volume": 0.25,
+      "structure": 0.3,
+      "context": 0.25,
+      "size": 0.2
+    }
+  },
+  "signal_generator": {
+    "min_quality_threshold": 7.0,
+    "min_ml_confidence": 0.75,
+    "auto_execute": false,
+    "risk_management": {
+      "max_risk_per_trade": 0.02,
+      "max_open_trades": 3
+    }
+  }
+}

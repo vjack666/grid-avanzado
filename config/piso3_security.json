@@ -1,0 +1,18 @@
+{
+  "risk_limits": {
+    "max_daily_loss": 500,
+    "max_drawdown": 0.1,
+    "emergency_stop": true
+  },
+  "validation": {
+    "require_confirmation": true,
+    "double_check_signals": true,
+    "ml_confidence_threshold": 0.8
+  },
+  "logging": {
+    "level": "INFO",
+    "file_rotation": true,
+    "max_file_size": "10MB",
+    "backup_count": 5
+  }
+}

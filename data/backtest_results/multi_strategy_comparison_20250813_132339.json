@@ -1,0 +1,52 @@
+{
+  "comparison_date": "2025-08-13T13:23:39.412573",
+  "test_period": "2024-01-01 to 2024-12-31",
+  "strategies_tested": 3,
+  "results": [
+    {
+      "strategy": "Grid Bollinger (Original)",
+      "type": "GRID_BOLLINGER",
+      "initial_balance": 10000.0,
+      "final_balance": 10245.899999999816,
+      "net_profit": 245.89999999981592,
+      "return_pct": 2.458999999998168,
+      "total_trades": 123,
+      "winning_trades": 101,
+      "losing_trades": 22,
+      "win_rate": 82.11382113821138,
+      "max_drawdown": 15.346477676161156,
+      "sharpe_ratio": 0.04349948957212375,
+      "execution_time": 2.126278
+    },
+    {
+      "strategy": "H\u00edbrida FVG + Grid",
+      "type": "HYBRID_FVG_GRID",
+      "initial_balance": 10000.0,
+      "final_balance": 8689.199999999832,
+      "net_profit": -1310.8000000001684,
+      "return_pct": -13.108000000001685,
+      "total_trades": 127,
+      "winning_trades": 98,
+      "losing_trades": 29,
+      "win_rate": 77.16535433070865,
+      "max_drawdown": 20.35441521489654,
+      "sharpe_ratio": -0.08134052812262257,
+      "execution_time": 6.370184
+    },
+    {
+      "strategy": "FVG Advanced",
+      "type": "FVG_ADVANCED",
+      "initial_balance": 10000.0,
+      "final_balance": 6945.199999999904,
+      "net_profit": -3054.8000000000957,
+      "return_pct": -30.548000000000954,
+      "total_trades": 111,
+      "winning_trades": 78,
+      "losing_trades": 33,
+      "win_rate": 70.27027027027027,
+      "max_drawdown": 32.52732990565656,
+      "sharpe_ratio": -0.22808920144862674,
+      "execution_time": 6.52802
+    }
+  ]
+}

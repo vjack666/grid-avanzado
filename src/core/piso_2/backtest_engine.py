@@ -2,10 +2,17 @@
 PISO 2 - BACKTEST ENGINE v1.0.0
 ================================
 Sistema de backtesting avanzado con datos reales de MT5
+Período de backtesting: 3 años completos (2022-2025)
 
 AUTOR: Sistema Modular Trading Grid
-FECHA: 2025-08-12
+FECHA: 2025-08-13
 PROTOCOLO: PISO 2 - BACKTEST ENGINE
+
+CARACTERÍSTICAS:
+- Backtest de 3 años de datos históricos
+- Análisis exhaustivo de rendimiento
+- Validación de calidad de datos
+- Métricas avanzadas de trading
 """
 
 import sys
@@ -13,10 +20,10 @@ import os
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from pathlib import Path
-import json
+from datetime import datetime, timedelta
 
 # Configurar rutas de imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -24,24 +31,37 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from src.core.config_manager import ConfigManager
 from src.core.logger_manager import LoggerManager
 from src.core.error_manager import ErrorManager
-from src.core.data_manager import DataManager
+
+# Importar el descargador de datos
+try:
+    from .data_downloader import HistoricalDataDownloader
+    DATA_DOWNLOADER_AVAILABLE = True
+except ImportError:
+    DATA_DOWNLOADER_AVAILABLE = False
 
 
 @dataclass
 class BacktestConfig:
-    """Configuración para backtesting"""
+    """Configuración para backtesting - Período de 3 años (2022-2025)"""
     symbol: str = "EURUSD"
     timeframe: str = "M15"
-    start_date: str = "2025-05-20"
-    end_date: str = "2025-08-12"
+    start_date: str = "2022-08-13"  # 3 años atrás desde agosto 2025
+    end_date: str = "2025-08-13"    # Fecha actual
     initial_balance: float = 10000.0
     spread: float = 0.00015  # 1.5 pips
     commission: float = 2.0  # $2 por lote por lado
-    strategy_type: str = "GRID_BOLLINGER"
+    strategy_type: str = "GRID_BOLLINGER"  # GRID_BOLLINGER, FVG_ADVANCED, HYBRID_FVG_GRID
     
     # Parámetros específicos de estrategia
     bollinger_period: int = 20
     bollinger_deviation: float = 2.0
+    
+    # FVG Settings (para estrategia FVG_ADVANCED)
+    fvg_min_size: float = 10.0  # Tamaño mínimo del gap en pips
+    fvg_max_age: int = 24  # Máximo age en períodos
+    fvg_confluence_weight: float = 1.5  # Peso para confluencias
+    
+    # Grid Settings
     grid_spacing: float = 0.0025  # 25 pips
     grid_levels: int = 10
     lot_size: float = 0.1
@@ -109,7 +129,7 @@ class BacktestResult:
 
 
 class HistoricalDataProcessor:
-    """PUERTA-P2-DATA: Procesador de datos históricos"""
+    """PUERTA-P2-DATA: Procesador de datos históricos para backtest de 3 años con descarga automática"""
     
     def __init__(self, config_manager: ConfigManager, logger_manager: LoggerManager, 
                  error_manager: ErrorManager):
@@ -120,24 +140,66 @@ class HistoricalDataProcessor:
         self.version = "v1.0.0"
         
         # Cache de datos
-        self._data_cache: Dict[str, pd.DataFrame] = {}
+        self.data_cache: Dict[str, pd.DataFrame] = {}
+        
+        # Inicializar descargador de datos si está disponible
+        if DATA_DOWNLOADER_AVAILABLE:
+            self.data_downloader = HistoricalDataDownloader(config_manager, logger_manager, error_manager)
+            self.logger.log_info(f"[{self.component_id}] Descargador de datos inicializado")
+        else:
+            self.data_downloader = None
+            self.logger.log_warning(f"[{self.component_id}] Descargador de datos no disponible")
+        
+        self.logger.log_info(f"[{self.component_id}] Inicializado para backtest de 3 años (2022-2025)")
+    
+    def configure_backtest_period(self, years: int = 3) -> BacktestConfig:
+        """Configurar período de backtest dinámicamente"""
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=years * 365)
+        
+        config = BacktestConfig()
+        config.start_date = start_date.strftime("%Y-%m-%d")
+        config.end_date = end_date.strftime("%Y-%m-%d")
+        
+        self.logger.log_info(f"[{self.component_id}] Período configurado: {config.start_date} a {config.end_date} ({years} años)")
+        return config
         
     def load_historical_data(self, symbol: str, timeframe: str, 
                            start_date: str = None, end_date: str = None) -> Optional[pd.DataFrame]:
-        """Cargar datos históricos desde archivos CSV"""
+        """Cargar datos históricos desde archivos CSV o descargar automáticamente"""
         try:
             cache_key = f"{symbol}_{timeframe}_{start_date}_{end_date}"
-            if cache_key in self._data_cache:
-                return self._data_cache[cache_key]
+            if cache_key in self.data_cache:
+                self.logger.log_info(f"Datos encontrados en cache: {cache_key}")
+                return self.data_cache[cache_key]
             
-            # Buscar archivo más reciente
-            # Primero intentar en el directorio del proyecto
+            # Verificar si necesitamos descargar datos
+            if self.data_downloader:
+                data_check = self.data_downloader.check_data_requirements(symbol, timeframe, start_date, end_date)
+                
+                if data_check["needs_download"]:
+                    self.logger.log_info(f"Descarga necesaria: {data_check['reason']}")
+                    
+                    # Intentar descargar datos automáticamente
+                    downloaded_data = self.data_downloader.download_historical_data(
+                        symbol, timeframe, start_date, end_date
+                    )
+                    
+                    if downloaded_data is not None:
+                        self.data_cache[cache_key] = downloaded_data
+                        self.logger.log_success(f"Datos descargados y cacheados: {len(downloaded_data)} registros")
+                        return downloaded_data
+                    else:
+                        self.logger.log_warning("Descarga automática falló, buscando datos existentes...")
+                else:
+                    self.logger.log_info(f"Datos existentes disponibles: {data_check.get('file', 'N/A')}")
+            
+            # Buscar archivos existentes como fallback
             project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
             project_data_dir = os.path.join(project_root, "data")
             
             # Buscar en directorio del proyecto primero
             if os.path.exists(project_data_dir):
-                from pathlib import Path
                 data_dir = Path(project_data_dir)
                 csv_files = list(data_dir.glob(f"**/velas_{symbol}_{timeframe}_*.csv"))
             else:
@@ -148,35 +210,70 @@ class HistoricalDataProcessor:
             if not csv_files:
                 self.error.handle_system_error(
                     "DATA_NOT_FOUND", 
-                    f"No se encontraron datos para {symbol} {timeframe}",
+                    f"No se encontraron datos para {symbol} {timeframe} y la descarga automática falló",
                     {"symbol": symbol, "timeframe": timeframe}
                 )
                 return None
             
             # Tomar el archivo más reciente
             latest_file = max(csv_files, key=lambda f: f.stat().st_mtime)
-            self.logger.log_info(f"Cargando datos desde: {latest_file}")
+            self.logger.log_info(f"Cargando datos desde archivo existente: {latest_file}")
             
             # Cargar y procesar datos
             df = pd.read_csv(latest_file)
-            df['datetime'] = pd.to_datetime(df['datetime'])
-            df.set_index('datetime', inplace=True)
+            
+            # Detectar formato de fecha automáticamente
+            if 'datetime' in df.columns:
+                df['datetime'] = pd.to_datetime(df['datetime'])
+                df.set_index('datetime', inplace=True)
+            elif 'time' in df.columns:
+                df['time'] = pd.to_datetime(df['time'])
+                df.set_index('time', inplace=True)
+            elif df.index.name == 'datetime' or df.index.name == 'time':
+                df.index = pd.to_datetime(df.index)
+            else:
+                # Asumir que la primera columna es datetime
+                if df.columns[0] in ['date', 'timestamp']:
+                    df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
+                    df.set_index(df.columns[0], inplace=True)
             
             # Filtrar por fechas si se especifican
             if start_date:
-                df = df[df.index >= start_date]
+                start_dt = pd.to_datetime(start_date) if isinstance(start_date, str) else start_date
+                df = df[df.index >= start_dt]
             if end_date:
-                df = df[df.index <= end_date]
+                end_dt = pd.to_datetime(end_date) if isinstance(end_date, str) else end_date
+                df = df[df.index <= end_dt]
             
             # Validar datos
             required_columns = ['open', 'high', 'low', 'close', 'volume']
             if not all(col in df.columns for col in required_columns):
-                raise ValueError(f"Faltan columnas requeridas: {required_columns}")
+                missing_cols = [col for col in required_columns if col not in df.columns]
+                self.logger.log_warning(f"Faltan columnas: {missing_cols}, intentando mapear automáticamente...")
+                
+                # Mapeo automático de columnas comunes
+                column_mapping = {
+                    'o': 'open', 'Open': 'open', 'OPEN': 'open',
+                    'h': 'high', 'High': 'high', 'HIGH': 'high',
+                    'l': 'low', 'Low': 'low', 'LOW': 'low',
+                    'c': 'close', 'Close': 'close', 'CLOSE': 'close',
+                    'v': 'volume', 'Volume': 'volume', 'VOLUME': 'volume',
+                    'vol': 'volume', 'tick_volume': 'volume'
+                }
+                
+                for old_col, new_col in column_mapping.items():
+                    if old_col in df.columns and new_col not in df.columns:
+                        df = df.rename(columns={old_col: new_col})
+                
+                # Verificar nuevamente
+                if not all(col in df.columns for col in required_columns):
+                    missing_cols = [col for col in required_columns if col not in df.columns]
+                    raise ValueError(f"Faltan columnas críticas después del mapeo: {missing_cols}")
             
             # Cache de datos
-            self._data_cache[cache_key] = df
+            self.data_cache[cache_key] = df
             
-            self.logger.log_success(f"Datos cargados: {len(df)} registros de {symbol} {timeframe}")
+            self.logger.log_success(f"Datos cargados exitosamente: {len(df)} registros de {symbol} {timeframe}")
             
             return df
             
@@ -204,7 +301,12 @@ class HistoricalDataProcessor:
             if len(df) > 1:
                 time_diff = df.index.to_series().diff().dropna()
                 expected_interval = time_diff.mode()[0] if len(time_diff.mode()) > 0 else timedelta(minutes=15)
-                gaps = time_diff[time_diff > expected_interval * 1.5]
+                # Asegurar que expected_interval es timedelta
+                if isinstance(expected_interval, timedelta):
+                    threshold = expected_interval * 1.5
+                else:
+                    threshold = timedelta(minutes=15) * 1.5
+                gaps = time_diff[time_diff > threshold]
                 validation["data_gaps"] = len(gaps)
             
             # Detectar anomalías de precio
@@ -334,10 +436,100 @@ class BacktestExecutor:
                 df.loc[df['close'] <= df['bb_lower'], 'signal'] = 'BUY'
                 df.loc[df['close'] >= df['bb_upper'], 'signal'] = 'SELL'
             
+            # FVG Advanced Strategy
+            elif config.strategy_type == "FVG_ADVANCED":
+                self.logger.log_info("Aplicando estrategia FVG Advanced...")
+                df = self._apply_fvg_strategy(df, config)
+            
+            # Hybrid FVG + Grid Strategy
+            elif config.strategy_type == "HYBRID_FVG_GRID":
+                self.logger.log_info("Aplicando estrategia híbrida FVG + Grid...")
+                df = self._apply_hybrid_strategy(df, config)
+            
             return df
             
         except Exception as e:
             self.logger.log_error(f"Error preparando indicadores: {e}")
+            return df
+    
+    def _apply_fvg_strategy(self, df: pd.DataFrame, config: BacktestConfig) -> pd.DataFrame:
+        """Aplicar estrategia FVG avanzada"""
+        try:
+            self.logger.log_info("Detectando FVGs...")
+            
+            # Detectar Fair Value Gaps
+            df['fvg_bullish'] = False
+            df['fvg_bearish'] = False
+            df['fvg_size'] = 0.0
+            df['signal'] = None
+            
+            # Detectar FVGs (gap entre velas consecutivas)
+            for i in range(2, len(df)):
+                # FVG Bullish: gap up (low[i] > high[i-2])
+                if (df.iloc[i]['low'] > df.iloc[i-2]['high'] and 
+                    (df.iloc[i]['low'] - df.iloc[i-2]['high']) * 100000 >= config.fvg_min_size):
+                    
+                    df.iloc[i, df.columns.get_loc('fvg_bullish')] = True
+                    df.iloc[i, df.columns.get_loc('fvg_size')] = (df.iloc[i]['low'] - df.iloc[i-2]['high']) * 100000
+                    df.iloc[i, df.columns.get_loc('signal')] = 'BUY'
+                
+                # FVG Bearish: gap down (high[i] < low[i-2])
+                elif (df.iloc[i]['high'] < df.iloc[i-2]['low'] and 
+                      (df.iloc[i-2]['low'] - df.iloc[i]['high']) * 100000 >= config.fvg_min_size):
+                    
+                    df.iloc[i, df.columns.get_loc('fvg_bearish')] = True
+                    df.iloc[i, df.columns.get_loc('fvg_size')] = (df.iloc[i-2]['low'] - df.iloc[i]['high']) * 100000
+                    df.iloc[i, df.columns.get_loc('signal')] = 'SELL'
+            
+            fvg_count = df['fvg_bullish'].sum() + df['fvg_bearish'].sum()
+            self.logger.log_success(f"FVGs detectados: {fvg_count} (Bullish: {df['fvg_bullish'].sum()}, Bearish: {df['fvg_bearish'].sum()})")
+            
+            return df
+            
+        except Exception as e:
+            self.logger.log_error(f"Error en estrategia FVG: {e}")
+            df['signal'] = None
+            return df
+    
+    def _apply_hybrid_strategy(self, df: pd.DataFrame, config: BacktestConfig) -> pd.DataFrame:
+        """Aplicar estrategia híbrida FVG + Grid"""
+        try:
+            self.logger.log_info("Aplicando estrategia híbrida FVG + Grid...")
+            
+            # Primero aplicar FVG
+            df = self._apply_fvg_strategy(df, config)
+            
+            # Luego añadir Bollinger Bands para confirmación
+            period = config.bollinger_period
+            deviation = config.bollinger_deviation
+            
+            df['sma'] = df['close'].rolling(window=period).mean()
+            df['std'] = df['close'].rolling(window=period).std()
+            df['bb_upper'] = df['sma'] + (df['std'] * deviation)
+            df['bb_lower'] = df['sma'] - (df['std'] * deviation)
+            
+            # Señales híbridas: FVG + confirmación Bollinger
+            df['signal_hybrid'] = None
+            
+            # BUY: FVG bullish + precio cerca del lower band
+            fvg_buy_mask = (df['fvg_bullish'] == True) & (df['close'] <= df['bb_lower'] * 1.01)
+            df.loc[fvg_buy_mask, 'signal_hybrid'] = 'BUY'
+            
+            # SELL: FVG bearish + precio cerca del upper band  
+            fvg_sell_mask = (df['fvg_bearish'] == True) & (df['close'] >= df['bb_upper'] * 0.99)
+            df.loc[fvg_sell_mask, 'signal_hybrid'] = 'SELL'
+            
+            # Usar señal híbrida como principal
+            df['signal'] = df['signal_hybrid']
+            
+            hybrid_signals = df['signal'].notna().sum()
+            self.logger.log_success(f"Señales híbridas generadas: {hybrid_signals}")
+            
+            return df
+            
+        except Exception as e:
+            self.logger.log_error(f"Error en estrategia híbrida: {e}")
+            df['signal'] = None
             return df
     
     def _execute_strategy_backtest(self, df: pd.DataFrame, config: BacktestConfig) -> BacktestResult:
@@ -522,4 +714,24 @@ class BacktestExecutor:
             returns = [t.net_pnl for t in result.trades]
             avg_return = np.mean(returns)
             std_return = np.std(returns)
-            result.sharpe_ratio = avg_return / std_return if std_return > 0 else 0
+            result.sharpe_ratio = float(avg_return / std_return) if std_return > 0 else 0.0
+        
+        return result
+    
+    def print_backtest_period_info(self, config: BacktestConfig):
+        """Mostrar información del período de backtest configurado"""
+        start_date = datetime.strptime(config.start_date, "%Y-%m-%d")
+        end_date = datetime.strptime(config.end_date, "%Y-%m-%d")
+        period_days = (end_date - start_date).days
+        period_years = period_days / 365.25
+        
+        self.logger.log_info("=" * 60)
+        self.logger.log_info("CONFIGURACIÓN DE BACKTEST - PERÍODO DE 3 AÑOS")
+        self.logger.log_info("=" * 60)
+        self.logger.log_info(f"Fecha inicio: {config.start_date}")
+        self.logger.log_info(f"Fecha final:  {config.end_date}")
+        self.logger.log_info(f"Período:      {period_days} días ({period_years:.1f} años)")
+        self.logger.log_info(f"Símbolo:      {config.symbol}")
+        self.logger.log_info(f"Timeframe:    {config.timeframe}")
+        self.logger.log_info(f"Capital:      ${config.initial_balance:,.2f}")
+        self.logger.log_info("=" * 60)

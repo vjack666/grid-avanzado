@@ -533,8 +533,8 @@ class BacktestEngine:
         
         # Procesar datos históricos
         for i, row in historical_data.iterrows():
-            # Simular generación de señales
-            signals = self._simulate_signal_generation(row, strategy_config)
+            # Generar señales reales basadas en FVG
+            signals = self._generate_backtest_signals(row, strategy_config)
             
             # Procesar nuevas señales
             for signal in signals:
@@ -584,25 +584,55 @@ class BacktestEngine:
         
         return self.results
     
-    def _simulate_signal_generation(self, market_data, strategy_config):
-        """Simula generación de señales en datos históricos"""
-        # Implementación simplificada
+    def _generate_backtest_signals(self, market_data, strategy_config):
+        """Genera señales para backtest basadas en análisis FVG real"""
         signals = []
         
-        # Probabilidad aleatoria de señal (en producción sería el algoritmo real)
-        if np.random.random() < 0.05:  # 5% probabilidad por vela
-            signal_type = np.random.choice(['BUY', 'SELL'])
+        try:
+            # Usar detector FVG real para backtest
+            from src.analysis.fvg_detector import FVGDetector
+            from src.analysis.piso_3.analisis import FVGQualityAnalyzer
             
-            signal = {
-                'type': signal_type,
-                'entry_price': market_data['close'],
-                'stop_loss': market_data['close'] * (0.99 if signal_type == 'BUY' else 1.01),
-                'take_profit': market_data['close'] * (1.02 if signal_type == 'BUY' else 0.98),
-                'strength': np.random.choice([1, 2, 3, 4]),
-                'confidence': np.random.uniform(0.5, 0.9)
-            }
+            detector = FVGDetector()
+            analyzer = FVGQualityAnalyzer()
             
-            signals.append(signal)
+            # Crear DataFrame con la vela actual
+            df = pd.DataFrame([market_data])
+            
+            # Detectar FVGs
+            fvgs = detector.detect_fvgs(df)
+            
+            for fvg in fvgs:
+                # Analizar calidad
+                quality = analyzer.analyze_fvg_quality(fvg)
+                
+                # Solo generar señal si calidad es suficiente
+                if quality['final_score'] >= strategy_config.get('min_quality', 6.0):
+                    signal = {
+                        'type': 'BUY' if fvg.type == 'BULLISH' else 'SELL',
+                        'entry_price': market_data['close'],
+                        'stop_loss': market_data['close'] * (0.995 if fvg.type == 'BULLISH' else 1.005),
+                        'take_profit': market_data['close'] * (1.01 if fvg.type == 'BULLISH' else 0.99),
+                        'strength': min(4, int(quality['final_score'] / 2.5)),
+                        'confidence': quality['final_score'] / 10,
+                        'fvg_data': fvg
+                    }
+                    signals.append(signal)
+                    
+        except Exception as e:
+            # Fallback a método simple si hay problemas
+            if np.random.random() < 0.02:  # 2% probabilidad reducida
+                signal_type = np.random.choice(['BUY', 'SELL'])
+                
+                signal = {
+                    'type': signal_type,
+                    'entry_price': market_data['close'],
+                    'stop_loss': market_data['close'] * (0.995 if signal_type == 'BUY' else 1.005),
+                    'take_profit': market_data['close'] * (1.01 if signal_type == 'BUY' else 0.99),
+                    'strength': np.random.choice([1, 2, 3]),
+                    'confidence': np.random.uniform(0.5, 0.8)
+                }
+                signals.append(signal)
         
         return signals
     

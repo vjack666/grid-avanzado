@@ -228,12 +228,12 @@ class FVGDatabaseManager:
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     fvg_data.get('timestamp_creation', datetime.now()),
-                    fvg_data['symbol'],
-                    fvg_data['timeframe'],
-                    fvg_data['vela1_open'], fvg_data['vela1_high'], fvg_data['vela1_low'], fvg_data['vela1_close'], fvg_data['vela1_volume'],
-                    fvg_data['vela2_open'], fvg_data['vela2_high'], fvg_data['vela2_low'], fvg_data['vela2_close'], fvg_data['vela2_volume'],
-                    fvg_data['vela3_open'], fvg_data['vela3_high'], fvg_data['vela3_low'], fvg_data['vela3_close'], fvg_data['vela3_volume'],
-                    fvg_data['gap_high'], fvg_data['gap_low'], fvg_data['gap_size_pips'], fvg_data['gap_type'],
+                    fvg_data.get('symbol', ''),
+                    fvg_data.get('timeframe', ''),
+                    fvg_data.get('vela1_open', 0.0), fvg_data.get('vela1_high', 0.0), fvg_data.get('vela1_low', 0.0), fvg_data.get('vela1_close', 0.0), fvg_data.get('vela1_volume', 0),
+                    fvg_data.get('vela2_open', 0.0), fvg_data.get('vela2_high', 0.0), fvg_data.get('vela2_low', 0.0), fvg_data.get('vela2_close', 0.0), fvg_data.get('vela2_volume', 0),
+                    fvg_data.get('vela3_open', 0.0), fvg_data.get('vela3_high', 0.0), fvg_data.get('vela3_low', 0.0), fvg_data.get('vela3_close', 0.0), fvg_data.get('vela3_volume', 0),
+                    fvg_data.get('gap_high', 0.0), fvg_data.get('gap_low', 0.0), fvg_data.get('gap_size_pips', 0.0), fvg_data.get('gap_type', ''),
                     fvg_data.get('quality_score', 0.0)
                 ))
                 

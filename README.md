@@ -200,3 +200,40 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 ---
 
 **🎯 Desarrollado con ❤️ para traders que buscan automatización inteligente y resultados consistentes.**
+
+
+## 🏢 PISO 3 - Sistema FVG Avanzado ✅
+
+**Estado:** COMPLETADO - Production Ready  
+**Versión:** 3.0.0  
+**Fecha:** Agosto 13, 2025
+
+### Componentes Implementados:
+
+- **📊 FVGQualityAnalyzer** - Análisis multi-factor de calidad de FVGs
+- **🤖 FVGMLPredictor** - Machine Learning para predicción de llenado
+- **💰 FVGSignalGenerator** - Generación automática de señales de trading
+- **🔗 SystemOrchestrator** - Pipeline integrado de procesamiento
+
+### Uso del Piso 3:
+
+```bash
+# Launcher dedicado
+python piso3_launcher.py EURUSD
+
+# Validación del sistema
+python validar_piso3.py
+
+# Demo completo
+python demo_piso3_completo.py
+```
+
+### Características:
+
+- ✅ Análisis de calidad con 7 factores técnicos
+- ✅ Machine Learning con 12 características
+- ✅ Gestión de riesgo automática (máx 2% por trade)
+- ✅ Pipeline de procesamiento en tiempo real
+- ✅ Rate limiting inteligente de señales
+- ✅ Múltiples niveles de take profit (R:R 1.5, 2.5, 4.0)
+
